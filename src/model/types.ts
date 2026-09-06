@@ -75,8 +75,10 @@ export interface Track {
   durationSec: number | null;
   /** Identifiant de la pochette chez Bandcamp. On pointe l'image, on ne la copie pas. */
   artId: string | null;
-  /** Page du morceau chez Bandcamp. C'est elle que l'app iOS ouvre. */
+  /** Page du morceau chez Bandcamp. Ouvre dans le navigateur, pas dans l'app. */
   bcUrl: string | null;
+  /** Rang dans la playlist "Physical", de 1 a 245. Sert a s'y retrouver dans l'app. */
+  plIndex: number | null;
 
   /** Tag tel qu'il etait dans le classeur, temoin. Jamais reecrit. */
   legacyTag: string | null;
@@ -137,6 +139,21 @@ export function missingFields(t: Track): string[] {
   if (!t.side) out.push('face');
   if (!t.family) out.push('famille');
   return out;
+}
+
+/** La playlist qui double le crate. Le seul lien que l'app iOS de Bandcamp intercepte. */
+export const PLAYLIST_URL = 'https://bandcamp.com/liquidsnake_/playlist/physical';
+
+/**
+ * Comment ouvrir un lien Bandcamp.
+ *
+ * Sur iPhone, `target="_blank"` empile les onglets Safari et empeche de revenir
+ * d'un simple retour arriere. On navigue donc dans le meme onglet : l'etat du set
+ * est persiste, revenir ne coute rien.
+ */
+export function externalLink(): { target?: string; rel?: string } {
+  const ios = typeof navigator !== 'undefined' && /iP(hone|ad|od)/.test(navigator.userAgent);
+  return ios ? {} : { target: '_blank', rel: 'noreferrer' };
 }
 
 /**

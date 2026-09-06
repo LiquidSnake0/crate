@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import type { Track, Family, Side } from '../model/types';
-import { SIDES, PICKABLE_FAMILIES, FAMILY_COLOR, FAMILY_INK, missingFields } from '../model/types';
+import {
+  SIDES, PICKABLE_FAMILIES, FAMILY_COLOR, FAMILY_INK, missingFields, externalLink,
+} from '../model/types';
 import { deriveTag, tagConflict, suggestAnchor } from '../model/camelot';
 import { updateTrack } from '../db/db';
 import { useAudioSource } from '../audio/context';
@@ -52,6 +54,7 @@ export function TrackCard({ track, code, playing, onPlay }: Props) {
           <span className="row-sub">
             {track.artist} · {track.album}
             {track.durationSec ? ` · ${fmt(track.durationSec)}` : ''}
+            {track.plIndex ? ` · n°${track.plIndex}` : ''}
           </span>
         </div>
       </div>
@@ -168,8 +171,7 @@ export function TrackCard({ track, code, playing, onPlay }: Props) {
                     ? source.searchUrl(track)
                     : `https://bandcamp.com/search?q=${encodeURIComponent(`${track.artist} ${track.title}`)}`)
                 }
-                target="_blank"
-                rel="noreferrer"
+                {...externalLink()}
               >
                 Bandcamp ↗
               </a>

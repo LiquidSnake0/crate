@@ -5,7 +5,7 @@ import type { Track } from './types';
 const t = (id: string, sec: number): Track => ({
   id, artist: 'A', album: 'Alb', title: id, trackNumber: null,
   key: null, bpm: null, anchorBpm: null, side: null, family: null,
-  durationSec: sec, artId: null, bcUrl: null, legacyTag: null, notes: '', audioId: null,
+  durationSec: sec, artId: null, bcUrl: null, plIndex: null, legacyTag: null, notes: '', audioId: null,
 });
 
 const six = [t('1', 300), t('2', 300), t('3', 300), t('4', 300), t('5', 300), t('6', 300)];

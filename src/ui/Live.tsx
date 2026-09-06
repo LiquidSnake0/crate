@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, judge, unjudge, saveLiveState } from '../db/db';
 import type { Track } from '../model/types';
-import { FAMILY_COLOR, FAMILY_INK } from '../model/types';
+import { FAMILY_COLOR, FAMILY_INK, PLAYLIST_URL, externalLink } from '../model/types';
 import { deriveTag } from '../model/camelot';
 import { buildPlacements } from '../model/placement';
 import {
@@ -12,12 +12,12 @@ import {
 import { Cover } from './Cover';
 
 /**
- * Page Bandcamp du morceau. Sur iPhone, l'app Bandcamp capte ce lien et ouvre
- * directement le son.
+ * Page Bandcamp du morceau. **Elle s'ouvre dans le navigateur, jamais dans l'app.**
  *
- * Ce n'est pas la playlist positionnee sur la piste : le lecteur de playlist ne
- * lit aucun parametre d'URL, il n'y a donc pas de lien profond vers une piste
- * dedans. La page du morceau est ce qui s'en approche le plus.
+ * Bandcamp ne declare que deux chemins comme liens universels, dans son
+ * `apple-app-site-association` : `/*​/playlist/*` et `/redirect_to_app`. Les pages
+ * `/track/` et `/album/` n'en font pas partie, donc iOS ne les detourne pas vers
+ * l'app, quoi qu'on fasse. En echange, c'est un seul geste pour ecouter.
  *
  * La recherche ne sert que pour un morceau saisi a la main, sans lien connu.
  */
@@ -185,13 +185,12 @@ export function Live() {
           <span className="now-title">{current.title}</span>
         </div>
         <div className="now-actions">
-          <a
-            className="ghost ghost-link"
-            href={bandcampUrl(current)}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Bandcamp ↗
+          <a className="ghost ghost-link" href={bandcampUrl(current)} {...externalLink()}>
+            Ecouter ↗
+          </a>
+          {/* Le seul lien que l'app Bandcamp intercepte sur iOS. */}
+          <a className="ghost ghost-link" href={PLAYLIST_URL} {...externalLink()}>
+            App{current.plIndex ? ` · n°${current.plIndex}` : ''}
           </a>
           <button className="ghost" onClick={() => setCurrentId(null)}>
             changer
@@ -253,6 +252,7 @@ export function Live() {
                   <span className="row-why">
                     {c.bpm ?? '?'} BPM · tempo {Math.round(c.tempo * 100)} · couleur{' '}
                     {Math.round(c.color * 100)} · cle {Math.round(c.camelot * 100)}
+                    {t.plIndex ? ` · n°${t.plIndex}` : ''}
                   </span>
                 </span>
                 <span className="row-score">{Math.round(c.score * 100)}</span>
@@ -261,10 +261,9 @@ export function Live() {
                 <a
                   className="vote vote-link"
                   href={bandcampUrl(t)}
-                  target="_blank"
-                  rel="noreferrer"
+                  {...externalLink()}
                   aria-label="Ecouter sur Bandcamp"
-                  title="Ecouter sur Bandcamp"
+                  title={`Ecouter sur Bandcamp${t.plIndex ? ` · n°${t.plIndex} de la playlist` : ''}`}
                 >
                   ↗
                 </a>

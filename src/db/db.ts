@@ -65,6 +65,7 @@ interface SeedRow {
   durationSec?: number | null;
   artId?: string | null;
   bcUrl?: string | null;
+  plIndex?: number | null;
 }
 
 /**
@@ -138,6 +139,7 @@ export async function seedIfEmpty(): Promise<{ added: number; filled: number }> 
     durationSec: r.durationSec ?? null,
     artId: r.artId ?? null,
     bcUrl: r.bcUrl ?? null,
+    plIndex: r.plIndex ?? null,
     legacyTag: r.legacyTag,
     notes: '',
     audioId: null,
@@ -165,6 +167,7 @@ export async function seedIfEmpty(): Promise<{ added: number; filled: number }> 
       durationSec: cur.durationSec ?? row.durationSec,
       artId: cur.artId ?? row.artId,
       bcUrl: cur.bcUrl ?? row.bcUrl,
+      plIndex: cur.plIndex ?? row.plIndex,
       legacyTag: cur.legacyTag ?? row.legacyTag,
     };
     if (JSON.stringify(merged) !== JSON.stringify(cur)) {
@@ -270,7 +273,7 @@ export async function unjudge(fromId: string, toId: string): Promise<void> {
 /** Ajoute un morceau saisi a la main. Renvoie null si un morceau identique existe. */
 export async function addTrack(
   input: Pick<Track, 'artist' | 'album' | 'title' | 'trackNumber' | 'key' | 'bpm'> &
-    Partial<Pick<Track, 'anchorBpm' | 'side' | 'family' | 'notes' | 'durationSec' | 'artId' | 'bcUrl'>>,
+    Partial<Pick<Track, 'anchorBpm' | 'side' | 'family' | 'notes' | 'durationSec' | 'artId' | 'bcUrl' | 'plIndex'>>,
 ): Promise<Track | null> {
   const id = trackId(input);
   if (await db.tracks.get(id)) return null;
@@ -288,6 +291,7 @@ export async function addTrack(
     durationSec: input.durationSec ?? null,
     artId: input.artId ?? null,
     bcUrl: input.bcUrl ?? null,
+    plIndex: input.plIndex ?? null,
     legacyTag: null,
     notes: input.notes ?? '',
     audioId: null,

@@ -135,10 +135,30 @@ au lieu d'y etre range.** `S+` n'a aucune piste et donc aucune couleur mesuree.
 il evite de stocker 1 a 2 Go sur le telephone. Chaque morceau porte son `bcUrl`, la
 page Bandcamp du titre, que l'app iOS capte et ouvre directement sur le son.
 
-**Il n'existe pas de lien profond vers une piste d'une playlist** : le lecteur de
-playlist de Bandcamp ne lit aucun parametre d'URL, verifie dans son bundle. La page du
-morceau est ce qui s'en approche le plus. La recherche ne sert plus que pour un morceau
-saisi a la main, sans lien connu.
+**Ce que l'app iOS de Bandcamp intercepte, et ce qu'elle n'intercepte pas.** Son
+`apple-app-site-association`, servi sur `bandcamp.com` comme sur les sous-domaines
+d'artistes, ne declare que deux chemins :
+
+    /*/playlist/*
+    /redirect_to_app
+
+Consequences, verifiees et non supposees :
+- une page `/track/` ou `/album/` **s'ouvre toujours dans le navigateur**, jamais dans
+  l'app. Aucun reglage cote app web n'y change quoi que ce soit ;
+- **l'URL de la playlist, elle, ouvre l'app.** C'est le seul lien qui le fasse ;
+- `/redirect_to_app` repond 404 cote serveur : il n'existe que pour iOS et laisserait
+  une erreur a qui n'a pas l'app. Inutilisable.
+- il n'existe pas de lien profond vers une piste **dans** une playlist : le lecteur de
+  playlist ne lit aucun parametre d'URL, verifie dans son bundle.
+
+D'ou les deux chemins offerts sur le morceau en cours : **Ecouter** ouvre la page du
+titre dans le navigateur, un seul geste pour entendre le son ; **App · n°137** ouvre la
+playlist dans l'app Bandcamp, ou `plIndex` donne le rang a retrouver. L'ordre de la
+playlist etant celui du crate, le numero suffit.
+
+Enfin, `externalLink()` retire `target="_blank"` sur iOS : empiler les onglets Safari
+empeche de revenir d'un simple retour arriere, et l'etat du set etant persiste,
+naviguer dans le meme onglet ne coute rien.
 
 Consequence, et c'est la contrainte qui rend ce choix viable : **l'etat du set est
 persiste** dans la table `state`, onglet actif compris. iOS peut decharger une
