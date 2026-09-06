@@ -7,6 +7,7 @@ import { FAMILIES, FAMILY_COLOR, FAMILY_INK, missingFields } from '../model/type
 import { deriveTag, tagConflict } from '../model/camelot';
 import { useAudioSource } from '../audio/context';
 import { TrackCard } from './TrackCard';
+import { buildPlacements } from '../model/placement';
 import { AddTrack } from './AddTrack';
 import { Player } from './Player';
 
@@ -37,6 +38,8 @@ export function Library() {
   const [current, setCurrent] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
+
+  const places = useMemo(() => buildPlacements(tracks ?? []), [tracks]);
 
   const sorted = useMemo(() => {
     if (!tracks) return [];
@@ -91,44 +94,6 @@ export function Library() {
           <span className="progress">{done} / {sorted.length} complets</span>
         </div>
 
-        <input
-          className="search"
-          placeholder="Chercher un titre, un artiste, un album"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        <div className="colors">
-          {FAMILIES.filter((f) => counts.has(f)).map((f) => (
-            <button
-              key={f}
-              className={`swatch${family === f ? ' swatch-on' : ''}`}
-              style={{ background: FAMILY_COLOR[f], color: FAMILY_INK[f] }}
-              title={`${f} · ${counts.get(f)} morceaux`}
-              onClick={() => setFamily(family === f ? null : f)}
-            >
-              {f}
-            </button>
-          ))}
-          {family && (
-            <button className="swatch swatch-clear" onClick={() => setFamily(null)}>
-              tout
-            </button>
-          )}
-        </div>
-
-        <div className="filters">
-          {FILTERS.map((f) => (
-            <button
-              key={f.id}
-              className={`filter${filter === f.id ? ' filter-on' : ''}`}
-              onClick={() => setFilter(f.id)}
-            >
-              {f.label} <b>{sorted.filter(f.match).length}</b>
-            </button>
-          ))}
-        </div>
-
         <div className="actions">
           <button
             className={`action${adding ? ' action-on' : ''}`}
@@ -167,7 +132,8 @@ export function Library() {
                 setNotice('Import en cours...');
                 const r = await importFiles(files);
                 setNotice(
-                  `${r.linked} fichiers rattaches, ${(r.bytes / 1e6).toFixed(0)} Mo.` +
+                  `${r.linked} fichiers rattaches, ${(r.bytes / 1e6).toFixed(0)} Mo, ` +
+                    `${r.covers} pochettes lues.` +
                     (r.unmatched.length
                       ? ` ${r.unmatched.length} sans correspondance dans le crate.`
                       : ''),
@@ -212,10 +178,53 @@ export function Library() {
           </label>
         </div>
 
-        {notice && (
-          <p className="notice" onClick={() => setNotice(null)}>{notice}</p>
-        )}
+
       </header>
+
+      <div className="sticky-bar">
+        <input
+          className="search"
+          placeholder="Chercher un titre, un album, ou un sigle"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
+        <div className="colors">
+          {FAMILIES.filter((f) => counts.has(f)).map((f) => (
+            <button
+              key={f}
+              className={`swatch${family === f ? ' swatch-on' : ''}`}
+              style={{ background: FAMILY_COLOR[f], color: FAMILY_INK[f] }}
+              title={`${f} · ${counts.get(f)} morceaux`}
+              onClick={() => setFamily(family === f ? null : f)}
+            >
+              {f}
+            </button>
+          ))}
+          {family && (
+            <button className="swatch swatch-clear" onClick={() => setFamily(null)}>
+              tout
+            </button>
+          )}
+        </div>
+
+        <div className="filters">
+          {FILTERS.map((f) => (
+            <button
+              key={f.id}
+              className={`filter${filter === f.id ? ' filter-on' : ''}`}
+              onClick={() => setFilter(f.id)}
+            >
+              {f.label} <b>{sorted.filter(f.match).length}</b>
+            </button>
+          ))}
+        </div>
+
+      </div>
+
+      {notice && (
+        <p className="notice" onClick={() => setNotice(null)}>{notice}</p>
+      )}
 
       {adding && <AddTrack onDone={setNotice} />}
 
@@ -224,6 +233,7 @@ export function Library() {
           <TrackCard
             key={t.id}
             track={t}
+            code={places.get(t.id)?.code ?? ''}
             playing={t.id === current}
             onPlay={(x) => setCurrent(x.id)}
           />

@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type { Track, AudioBlob, Judgement } from '../model/types';
+import type { Track, AudioBlob, Judgement, Cover } from '../model/types';
 import seed from '../data/seed.json';
 
 // Deux tables, deux durees de vie tres differentes :
@@ -13,6 +13,7 @@ class CrateDb extends Dexie {
   tracks!: Table<Track, string>;
   audio!: Table<AudioBlob, string>;
   judgements!: Table<Judgement, string>;
+  covers!: Table<Cover, string>;
 
   constructor() {
     super('crate');
@@ -24,6 +25,12 @@ class CrateDb extends Dexie {
       tracks: 'id, artist, album, side, family, audioId',
       audio: 'id',
       judgements: 'id, fromId, toId, verdict',
+    });
+    this.version(3).stores({
+      tracks: 'id, artist, album, side, family, audioId',
+      audio: 'id',
+      judgements: 'id, fromId, toId, verdict',
+      covers: 'id',
     });
   }
 }
@@ -137,6 +144,18 @@ export async function judge(
     source,
     at: new Date().toISOString(),
   });
+}
+
+/** Pose une pochette sur tout le disque. Un choix manuel n'est jamais ecrase par l'ID3. */
+export async function setCover(
+  discId: string,
+  blob: Blob,
+  source: Cover['source'],
+): Promise<boolean> {
+  const existing = await db.covers.get(discId);
+  if (existing?.source === 'manuel' && source === 'id3') return false;
+  await db.covers.put({ id: discId, blob, source });
+  return true;
 }
 
 export async function unjudge(fromId: string, toId: string): Promise<void> {

@@ -19,15 +19,23 @@ export default function App() {
 
   return (
     <AudioSourceProvider>
+      {/* Un seul element colle a l'ecran, et il est en bas : deux barres sticky
+          empilees en haut se chevauchaient et mangeaient la moitie du telephone. */}
+      <main className="screen">{tab === 'crate' ? <Library /> : <Live />}</main>
       <nav className="tabs">
-        <button className={tab === 'crate' ? 'tab tab-on' : 'tab'} onClick={() => setTab('crate')}>
+        <button
+          className={tab === 'crate' ? 'tab tab-on' : 'tab'}
+          onClick={() => setTab('crate')}
+        >
           Crate
         </button>
-        <button className={tab === 'live' ? 'tab tab-on' : 'tab'} onClick={() => setTab('live')}>
+        <button
+          className={tab === 'live' ? 'tab tab-on' : 'tab'}
+          onClick={() => setTab('live')}
+        >
           Live
         </button>
       </nav>
-      {tab === 'crate' ? <Library /> : <Live />}
     </AudioSourceProvider>
   );
 }

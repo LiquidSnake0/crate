@@ -4,10 +4,13 @@ import { SIDES, FAMILIES, FAMILY_COLOR, FAMILY_INK, missingFields } from '../mod
 import { deriveTag, tagConflict, suggestAnchor } from '../model/camelot';
 import { updateTrack } from '../db/db';
 import { useAudioSource } from '../audio/context';
+import { Cover } from './Cover';
 import { BandcampLinkSource } from '../audio/bandcamp';
 
 interface Props {
   track: Track;
+  /** Sigle face + rang sur la face, ex "B4". Vide tant que la face manque. */
+  code: string;
   playing: boolean;
   onPlay: (t: Track) => void;
 }
@@ -17,7 +20,7 @@ interface Props {
  * sortie du champ : pas de bouton Enregistrer, rien a perdre si Safari tue
  * l'onglet au milieu d'une session de tri.
  */
-export function TrackCard({ track, playing, onPlay }: Props) {
+export function TrackCard({ track, code, playing, onPlay }: Props) {
   const [open, setOpen] = useState(false);
   const { source } = useAudioSource();
   const tag = deriveTag(track.key, track.bpm, track.anchorBpm);
@@ -36,17 +39,17 @@ export function TrackCard({ track, playing, onPlay }: Props) {
   return (
     <article className={`card${playing ? ' card-playing' : ''}`}>
       <div className="card-head" onClick={() => setOpen((o) => !o)}>
+        <Cover track={track} size={52} />
+        <span className={code ? 'code' : 'code code-empty'}>{code || '··'}</span>
         <div className="card-id">
-          <span className="track-title">{track.title}</span>
-          <span className="track-sub">
+          <span className={`tag${conflict ? ' tag-conflict' : ''}`} style={tagStyle}>
+            {tag ? tag.text : '?'}
+          </span>
+          <span className="row-title">{track.title}</span>
+          <span className="row-sub">
             {track.artist} · {track.album}
-            {track.side ? ` · face ${track.side}` : ''}
-            {track.trackNumber ? ` · ${track.trackNumber}` : ''}
           </span>
         </div>
-        <span className={`tag${conflict ? ' tag-conflict' : ''}`} style={tagStyle}>
-          {tag ? tag.text : '?'}
-        </span>
       </div>
 
       {missing.length > 0 && !open && (
@@ -126,6 +129,12 @@ export function TrackCard({ track, playing, onPlay }: Props) {
                 {f}
               </button>
             ))}
+          </div>
+
+          <div className="chip-row">
+            <span className="chip-label">Pochette</span>
+            <Cover track={track} size={44} editable />
+            <span className="hint-inline">vaut pour tout le disque</span>
           </div>
 
           <label className="field field-wide">

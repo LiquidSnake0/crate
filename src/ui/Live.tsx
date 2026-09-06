@@ -4,13 +4,17 @@ import { db, judge, unjudge } from '../db/db';
 import type { Track } from '../model/types';
 import { FAMILY_COLOR, FAMILY_INK } from '../model/types';
 import { deriveTag } from '../model/camelot';
-import { rankNext, playedBpm, pairKey, DEFAULT_WEIGHTS, type Weights } from '../model/scoring';
+import { buildPlacements } from '../model/placement';
+import { rankNext, playedBpm, DEFAULT_WEIGHTS, type Weights } from '../model/scoring';
+import { Cover } from './Cover';
 
 /**
- * Mode live : on tape le morceau en cours, l'app classe les suites possibles.
+ * Mode live : on tape le morceau en cours, l'app classe les suites.
  *
- * Le tempo cible monte a chaque enchainement, c'est la rampe du set. Un pas de
- * 1 BPM mene de 82 a 97 en dix-sept morceaux, soit une heure de set.
+ * Ce qui identifie un candidat, c'est la pochette et le sigle "B4". Le titre est
+ * present mais discret : aux platines, il ne sert pas a retrouver un disque.
+ *
+ * Le tempo cible monte a chaque enchainement, c'est la rampe du set.
  */
 export function Live() {
   const tracks = useLiveQuery(() => db.tracks.toArray(), [], undefined);
@@ -25,10 +29,11 @@ export function Live() {
     () => new Map((rows ?? []).map((j) => [j.id, j.verdict])),
     [rows],
   );
+  const places = useMemo(() => buildPlacements(tracks ?? []), [tracks]);
+  const code = (t: Track) => places.get(t.id)?.code ?? '';
 
   const current = tracks?.find((t) => t.id === currentId) ?? null;
 
-  // Un refus sort de la vue : c'est le but. Il reste consultable pour etre annule.
   const ranked = useMemo(() => {
     if (!current || !tracks) return [];
     return rankNext(current, tracks, { weights, verdicts });
@@ -43,7 +48,6 @@ export function Live() {
 
   if (!tracks) return <p className="loading">Ouverture du crate...</p>;
 
-  // Pas de morceau en cours : on choisit par quoi on demarre.
   if (!current) {
     const q = search.trim().toLowerCase();
     const found = q
@@ -52,29 +56,38 @@ export function Live() {
             (t) =>
               t.title.toLowerCase().includes(q) ||
               t.artist.toLowerCase().includes(q) ||
-              t.album.toLowerCase().includes(q),
+              t.album.toLowerCase().includes(q) ||
+              code(t).toLowerCase() === q,
           )
           .slice(0, 25)
       : [];
     return (
-      <div className="live">
-        <p className="live-hint">Par quoi tu demarres ?</p>
+      <div className="pad">
+        <p className="hint">Par quoi tu demarres ?</p>
         <input
           className="search"
           autoFocus
-          placeholder="Titre, artiste ou album"
+          placeholder="Titre, album, ou un sigle comme B4"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <div className="list">
           {found.map((t) => (
-            <button key={t.id} className="pick" onClick={() => { setCurrentId(t.id); setChain([t.id]); }}>
-              <TagChip track={t} />
-              <span className="pick-id">
-                <b>{t.title}</b>
-                <span>{t.artist} · {t.album}</span>
+            <button
+              key={t.id}
+              className="row row-tap"
+              onClick={() => {
+                setCurrentId(t.id);
+                setChain([t.id]);
+              }}
+            >
+              <Cover track={t} size={52} />
+              <span className={code(t) ? 'code' : 'code code-empty'}>{code(t) || '··'}</span>
+              <span className="row-id">
+                <span className="row-title">{t.title}</span>
+                <span className="row-sub">{t.album}</span>
               </span>
-              <span className="pick-bpm">{playedBpm(t) ?? '?'}</span>
+              <span className="row-bpm">{playedBpm(t) ?? '?'}</span>
             </button>
           ))}
         </div>
@@ -84,6 +97,7 @@ export function Live() {
 
   const from = playedBpm(current);
   const target = (from ?? 82) + weights.ramp;
+  const currentTag = deriveTag(current.key, current.bpm, current.anchorBpm);
 
   const advance = (t: Track) => {
     void judge(current.id, t.id, 'oui', 'live');
@@ -92,31 +106,42 @@ export function Live() {
   };
 
   return (
-    <div className="live">
+    <div className="pad">
       <div className="now">
-        <TagChip track={current} big />
+        <Cover track={current} size={72} />
         <div className="now-id">
-          <b>{current.title}</b>
-          <span>{current.artist} · {current.album}{current.side ? ` · face ${current.side}` : ''}</span>
+          <span className="now-code">{code(current) || '··'}</span>
+          <span
+            className="tag"
+            style={
+              current.family
+                ? { background: FAMILY_COLOR[current.family], color: FAMILY_INK[current.family] }
+                : { border: '1px dashed var(--line)', color: 'var(--muted)' }
+            }
+          >
+            {currentTag ? currentTag.text : '?'}
+          </span>
+          <span className="now-title">{current.title}</span>
         </div>
-        <button className="now-change" onClick={() => setCurrentId(null)}>changer</button>
+        <button className="ghost" onClick={() => setCurrentId(null)}>
+          changer
+        </button>
       </div>
 
       <div className="ramp">
         <span className="ramp-line">
-          {from ?? '?'} BPM <span className="ramp-arrow">→</span> <b>{target.toFixed(1)}</b> vise
-          <span className="ramp-count"> · {chain.length} morceau{chain.length > 1 ? 'x' : ''}</span>
+          {from ?? '?'} <span className="ramp-arrow">→</span> <b>{target.toFixed(1)}</b> BPM
+          <span className="ramp-count"> · {chain.length} joue{chain.length > 1 ? 's' : ''}</span>
         </span>
         {refused.length > 0 && (
           <button
-            className={`ramp-refused${viewingRefused ? ' ramp-refused-on' : ''}`}
+            className={`ghost${viewingRefused ? ' ghost-warn' : ''}`}
             onClick={() => setShowRefused((v) => !v)}
           >
             {refused.length} refuse{refused.length > 1 ? 's' : ''}
           </button>
         )}
         <label className="ramp-field">
-          <span>BPM par morceau</span>
           <input
             type="range"
             min="0"
@@ -125,47 +150,58 @@ export function Live() {
             value={weights.ramp}
             onChange={(e) => setWeights({ ...weights, ramp: Number(e.target.value) })}
           />
-          <b>{weights.ramp.toFixed(1)}</b>
+          <b>+{weights.ramp.toFixed(1)}</b>
         </label>
       </div>
 
       <div className="list">
         {candidates.map((c) => {
-          const key = pairKey(current, c.track);
-          const verdict = verdicts.get(key) ?? null;
+          const t = c.track;
+          const verdict = c.verdict;
+          const tag = deriveTag(t.key, t.bpm, t.anchorBpm);
           return (
-            <article key={c.track.id} className={`cand${verdict ? ` cand-${verdict}` : ''}`}>
-              <TagChip track={c.track} />
-              <div className="cand-id" onClick={() => advance(c.track)}>
-                <b>{c.track.title}</b>
-                <span>
-                  {c.track.artist} · {c.bpm ?? '?'} BPM
-                  {verdict && <em> · deja juge {verdict}</em>}
+            <article key={t.id} className={`row${verdict === 'non' ? ' row-off' : ''}`}>
+              <button className="row-main" onClick={() => advance(t)}>
+                <Cover track={t} size={56} />
+                <span className={code(t) ? 'code' : 'code code-empty'}>{code(t) || '··'}</span>
+                <span className="row-id">
+                  <span
+                    className="tag"
+                    style={
+                      t.family
+                        ? { background: FAMILY_COLOR[t.family], color: FAMILY_INK[t.family] }
+                        : { border: '1px dashed var(--line)', color: 'var(--muted)' }
+                    }
+                  >
+                    {tag ? tag.text : '?'}
+                  </span>
+                  <span className="row-title">{t.title}</span>
+                  <span className="row-why">
+                    {c.bpm ?? '?'} BPM · tempo {Math.round(c.tempo * 100)} · couleur{' '}
+                    {Math.round(c.color * 100)} · cle {Math.round(c.camelot * 100)}
+                  </span>
                 </span>
-                <span className="cand-why">
-                  tempo {pct(c.tempo)} · couleur {pct(c.color)} · cle {pct(c.camelot)}
-                </span>
-              </div>
-              <span className="cand-score">{Math.round(c.score * 100)}</span>
-              <div className="cand-vote">
+                <span className="row-score">{Math.round(c.score * 100)}</span>
+              </button>
+              <div className="votes">
                 <button
-                  className={verdict === 'oui' ? 'vote vote-on' : 'vote'}
-                  title="Ca passe"
+                  className={verdict === 'oui' ? 'vote vote-yes' : 'vote'}
+                  aria-label="Ca passe"
                   onClick={() =>
                     verdict === 'oui'
-                      ? void unjudge(current.id, c.track.id)
-                      : void judge(current.id, c.track.id, 'oui', 'ecoute')
+                      ? void unjudge(current.id, t.id)
+                      : void judge(current.id, t.id, 'oui', 'ecoute')
                   }
                 >
                   ✓
                 </button>
                 <button
-                  className={verdict === 'non' ? 'vote vote-on vote-no' : 'vote'}
-                  title="Ca passe pas"
+                  className={verdict === 'non' ? 'vote vote-no' : 'vote'}
+                  aria-label="Ca passe pas"
                   onClick={() =>
                     verdict === 'non'
-                      ? void unjudge(current.id, c.track.id)
-                      : void judge(current.id, c.track.id, 'non', 'ecoute')
+                      ? void unjudge(current.id, t.id)
+                      : void judge(current.id, t.id, 'non', 'ecoute')
                   }
                 >
                   ✗
@@ -176,24 +212,5 @@ export function Live() {
         })}
       </div>
     </div>
-  );
-}
-
-const pct = (x: number) => `${Math.round(x * 100)}`;
-
-function TagChip({ track, big }: { track: Track; big?: boolean }) {
-  const tag = deriveTag(track.key, track.bpm, track.anchorBpm);
-  const fam = track.family;
-  return (
-    <span
-      className={big ? 'player-tag' : 'tag'}
-      style={
-        fam
-          ? { background: FAMILY_COLOR[fam], color: FAMILY_INK[fam] }
-          : { border: '1px dashed var(--line)', color: 'var(--muted)' }
-      }
-    >
-      {tag ? tag.text : '?'}
-    </span>
   );
 }

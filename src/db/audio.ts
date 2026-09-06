@@ -1,5 +1,7 @@
-import { db, trackId } from './db';
+import { db, trackId, setCover } from './db';
 import type { Track } from '../model/types';
+import { discOf } from '../model/types';
+import { extractCover } from './id3';
 
 // Safari iOS n'a pas de File System Access API : impossible de pointer un dossier
 // et de le garder. Le seul chemin est le selecteur de fichiers, qui rend des File
@@ -26,6 +28,7 @@ export interface ImportReport {
   linked: number;
   unmatched: string[];
   bytes: number;
+  covers: number;
 }
 
 /**
@@ -36,7 +39,8 @@ export interface ImportReport {
 export async function importFiles(files: FileList | File[]): Promise<ImportReport> {
   const list = Array.from(files);
   const byId = new Map((await db.tracks.toArray()).map((t) => [t.id, t]));
-  const report: ImportReport = { linked: 0, unmatched: [], bytes: 0 };
+  const report: ImportReport = { linked: 0, unmatched: [], bytes: 0, covers: 0 };
+  const seenDiscs = new Set<string>();
 
   for (const file of list) {
     const parsed = parseFileName(file.name);
@@ -50,6 +54,14 @@ export async function importFiles(files: FileList | File[]): Promise<ImportRepor
     await db.tracks.update(match.id, { audioId } satisfies Partial<Track>);
     report.linked += 1;
     report.bytes += file.size;
+
+    // Une pochette par disque suffit : on ne relit pas l'en-tete des quinze pistes.
+    const disc = discOf(match);
+    if (!seenDiscs.has(disc)) {
+      seenDiscs.add(disc);
+      const cover = await extractCover(file);
+      if (cover && (await setCover(disc, cover, 'id3'))) report.covers += 1;
+    }
   }
   return report;
 }

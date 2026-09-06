@@ -83,6 +83,14 @@ export interface Judgement {
   at: string;
 }
 
+/** Pochette d'un disque. La cle est `discOf(track)` : elle vaut pour tout le disque. */
+export interface Cover {
+  id: string;
+  blob: Blob;
+  /** D'ou elle vient, pour savoir si on peut l'ecraser sans perdre un choix manuel. */
+  source: 'id3' | 'manuel';
+}
+
 export interface AudioBlob {
   id: string;
   fileName: string;
