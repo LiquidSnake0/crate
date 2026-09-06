@@ -10,6 +10,7 @@ import { TrackCard } from './TrackCard';
 import { buildPlacements } from '../model/placement';
 import { AddTrack } from './AddTrack';
 import { Covers } from './Covers';
+import { Sides } from './Sides';
 import { Player } from './Player';
 
 type FilterId = 'tous' | 'face' | 'famille' | 'cle' | 'divergent';
@@ -38,7 +39,7 @@ export function Library() {
   const [search, setSearch] = useState('');
   const [current, setCurrent] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [panel, setPanel] = useState<'aucun' | 'ajout' | 'pochettes'>('aucun');
+  const [panel, setPanel] = useState<'aucun' | 'ajout' | 'pochettes' | 'faces'>('aucun');
 
   const places = useMemo(() => buildPlacements(tracks ?? []), [tracks]);
 
@@ -108,6 +109,13 @@ export function Library() {
             onClick={() => setPanel((p) => (p === 'pochettes' ? 'aucun' : 'pochettes'))}
           >
             Pochettes
+          </button>
+
+          <button
+            className={`action${panel === 'faces' ? ' action-on' : ''}`}
+            onClick={() => setPanel((p) => (p === 'faces' ? 'aucun' : 'faces'))}
+          >
+            Faces
           </button>
 
           <button
@@ -239,6 +247,7 @@ export function Library() {
 
       {panel === 'ajout' && <AddTrack onDone={setNotice} />}
       {panel === 'pochettes' && <Covers tracks={sorted} onDone={setNotice} />}
+      {panel === 'faces' && <Sides tracks={sorted} onDone={setNotice} />}
 
       <div className="list">
         {visible.map((t) => (

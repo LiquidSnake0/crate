@@ -213,6 +213,26 @@ travail fait a la main, et reprend le titre du seed et non celui de l'ancien.
 La page charge par lots de 50 au defilement, et seul un defilement reel declenche la
 suite : regler `scrollTop` en JavaScript ne charge rien.
 
+## Les faces ne sont pas deductibles
+
+**Bandcamp ne connait pas les faces d'un vinyle**, et la duree ne permet pas de les
+retrouver. Mesure sur les treize disques deja renseignes : **une face va de 4,9 a
+32,4 minutes**, et le nombre de faces ne suit pas la duree totale (62 min en 2 faces,
+48 min en 4). Le decoupage depend du pressage, pas d'une regle.
+
+Ce qui est sur, en revanche : **l'ordre de la playlist suit exactement l'ordre
+(face, position)**, verifie sur 13 disques sur 13 sans une divergence, et les onze
+disques restants ont le meme ordre par numero de piste. Il ne manque donc que les
+coupures.
+
+D'ou l'ecran Faces : l'album s'affiche dans l'ordre, Selim pose une a trois coupures
+par disque, l'app remplit A/B/C/D et renumerote a partir de 1 sur chaque face. Les
+boutons "2 faces" et "4 faces" proposent un decoupage a durees egales comme point de
+depart, jamais comme verdict.
+
+**Ne pas ecrire de faces devinees.** Un `B4` faux tromperait Selim aux platines, ce
+qui est pire qu'un sigle vide qui se voit.
+
 ## La rampe se calcule, elle ne se regle plus
 
 Le curseur du mode live donne **la duree du set**, pas le pas. `rampPlan` en deduit
