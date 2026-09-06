@@ -158,6 +158,24 @@ une interface injectee par contexte :
 remplissage de sa colonne Tag**, 245 sur 249 recuperees. Restent a remplir a la
 main : 114 faces, 4 couleurs, 4 cles et 4 BPM.
 
+## Les pochettes
+
+Trois chemins, du plus large au plus fin :
+
+1. **Un dossier entier** (`webkitdirectory`). Les images telechargees de Bandcamp
+   s'appellent rarement d'apres l'album, souvent `cover.jpg` : **ce qui porte le nom
+   de l'album, c'est le dossier**, d'ou la lecture de `webkitRelativePath` en priorite.
+2. **Des images choisies une a une**, associees par leur nom de fichier.
+3. **A la main**, dans la grille de l'ecran Pochettes ou sur la fiche d'un morceau.
+
+`matchDisc` ne devine jamais : si le chemin vise zero ou plusieurs disques, l'image
+est signalee et rien n'est ecrit. Un choix manuel n'est jamais ecrase par un import.
+
+Les images sont reduites a 600 px avant stockage. Une pochette Bandcamp pese environ
+500 Ko, soit 12 Mo pour le crate ; a 600 px, environ 10 Ko piece, soit 250 Ko.
+
+Un import MP3 lit aussi la pochette dans la frame APIC, une seule fois par disque.
+
 ## Le classeur est de l'histoire
 
 Les deux `.xlsx` sont des valeurs saisies avant l'existence de l'app. Ils ont servi

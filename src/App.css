@@ -484,3 +484,38 @@ select.action { appearance: none; padding-right: 1.4rem; }
 
 /* Sans texte, une pastille doit rester cliquable au pouce. */
 .swatch { min-width: 2.3rem; height: 2.1rem; }
+
+/* ---- grille des disques ---- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 0.6rem;
+}
+
+.tile { display: flex; flex-direction: column; gap: 0.2rem; cursor: pointer; min-width: 0; }
+
+.tile-img {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 7px;
+  object-fit: cover;
+  background: var(--panel-2);
+  display: block;
+}
+.tile:hover .tile-img { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.tile-name {
+  font-size: 0.7rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tile-sub {
+  font-size: 0.63rem;
+  color: #6f767d;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
