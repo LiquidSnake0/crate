@@ -470,3 +470,17 @@ select.action { appearance: none; padding-right: 1.4rem; }
   font-size: 0.68rem;
 }
 .player-main { border-color: var(--accent) !important; color: var(--accent) !important; }
+
+.now-actions { display: flex; flex-direction: column; gap: 0.3rem; flex: 0 0 auto; }
+.ghost-link { text-decoration: none; text-align: center; }
+
+.vote-link {
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  color: var(--muted);
+}
+.vote-link:hover { color: var(--text); border-color: var(--muted); }
+
+/* Sans texte, une pastille doit rester cliquable au pouce. */
+.swatch { min-width: 2.3rem; height: 2.1rem; }

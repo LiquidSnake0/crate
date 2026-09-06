@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Track, Family, Side } from '../model/types';
-import { SIDES, FAMILIES, FAMILY_COLOR, FAMILY_INK, missingFields } from '../model/types';
+import { SIDES, PICKABLE_FAMILIES, FAMILY_COLOR, FAMILY_INK, missingFields } from '../model/types';
 import { deriveTag, tagConflict, suggestAnchor } from '../model/camelot';
 import { updateTrack } from '../db/db';
 import { useAudioSource } from '../audio/context';
@@ -118,16 +118,15 @@ export function TrackCard({ track, code, playing, onPlay }: Props) {
 
           <div className="chip-row">
             <span className="chip-label">Couleur</span>
-            {FAMILIES.map((f: Family) => (
+            {PICKABLE_FAMILIES.map((f: Family) => (
               <button
                 key={f}
                 className={`swatch${fam === f ? ' swatch-on' : ''}`}
-                style={{ background: FAMILY_COLOR[f], color: FAMILY_INK[f] }}
+                style={{ background: FAMILY_COLOR[f] }}
                 title={f}
+                aria-label={f}
                 onClick={() => set({ family: fam === f ? null : f })}
-              >
-                {f}
-              </button>
+              />
             ))}
           </div>
 

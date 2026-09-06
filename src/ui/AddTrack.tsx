@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Family, Side } from '../model/types';
-import { SIDES, FAMILIES, FAMILY_COLOR, FAMILY_INK } from '../model/types';
+import { SIDES, PICKABLE_FAMILIES, FAMILY_COLOR } from '../model/types';
 import { deriveTag, suggestAnchor } from '../model/camelot';
 import { addTrack } from '../db/db';
 
@@ -124,15 +124,15 @@ export function AddTrack({ onDone }: { onDone: (message: string) => void }) {
 
       <div className="chip-row">
         <span className="chip-label">Couleur</span>
-        {FAMILIES.map((f) => (
+        {PICKABLE_FAMILIES.map((f) => (
           <button
             key={f}
             className={`swatch${family === f ? ' swatch-on' : ''}`}
-            style={{ background: FAMILY_COLOR[f], color: FAMILY_INK[f] }}
+            style={{ background: FAMILY_COLOR[f] }}
+            title={f}
+            aria-label={f}
             onClick={() => setFamily(family === f ? null : f)}
-          >
-            {f}
-          </button>
+          />
         ))}
       </div>
 

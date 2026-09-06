@@ -1,12 +1,17 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, judge, unjudge } from '../db/db';
+import { db, judge, unjudge, saveLiveState } from '../db/db';
 import type { Track } from '../model/types';
 import { FAMILY_COLOR, FAMILY_INK } from '../model/types';
 import { deriveTag } from '../model/camelot';
 import { buildPlacements } from '../model/placement';
 import { rankNext, playedBpm, DEFAULT_WEIGHTS, type Weights } from '../model/scoring';
 import { Cover } from './Cover';
+
+/** Recherche Bandcamp du morceau : c'est la que Selim l'ecoute. */
+function bandcampUrl(t: Track): string {
+  return `https://bandcamp.com/search?q=${encodeURIComponent(`${t.artist} ${t.title}`)}`;
+}
 
 /**
  * Mode live : on tape le morceau en cours, l'app classe les suites.
@@ -19,11 +24,34 @@ import { Cover } from './Cover';
 export function Live() {
   const tracks = useLiveQuery(() => db.tracks.toArray(), [], undefined);
   const rows = useLiveQuery(() => db.judgements.toArray(), [], undefined);
+  // `get` rend undefined aussi bien pendant le chargement que quand rien n'est
+  // enregistre : impossible de distinguer les deux, et la restauration ne
+  // s'achevait donc jamais au premier lancement. Un tableau leve l'ambiguite.
+  const saved = useLiveQuery(() => db.state.where('id').equals('live').toArray(), [], undefined);
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [weights, setWeights] = useState<Weights>(DEFAULT_WEIGHTS);
   const [search, setSearch] = useState('');
   const [chain, setChain] = useState<string[]>([]);
   const [showRefused, setShowRefused] = useState(false);
+  const [restored, setRestored] = useState(false);
+
+  // On reprend le set la ou il en etait, une seule fois : Selim ecoute dans
+  // Bandcamp et revient, et iOS a pu decharger la webapp entre-temps.
+  useEffect(() => {
+    if (restored || saved === undefined) return;
+    const row = saved[0];
+    if (row) {
+      setCurrentId(row.currentId);
+      setChain(row.chain);
+      setWeights((w) => ({ ...w, ramp: row.ramp }));
+    }
+    setRestored(true);
+  }, [saved, restored]);
+
+  useEffect(() => {
+    if (!restored) return;
+    void saveLiveState({ currentId, chain, ramp: weights.ramp });
+  }, [restored, currentId, chain, weights.ramp]);
 
   const verdicts = useMemo(
     () => new Map((rows ?? []).map((j) => [j.id, j.verdict])),
@@ -123,9 +151,19 @@ export function Live() {
           </span>
           <span className="now-title">{current.title}</span>
         </div>
-        <button className="ghost" onClick={() => setCurrentId(null)}>
-          changer
-        </button>
+        <div className="now-actions">
+          <a
+            className="ghost ghost-link"
+            href={bandcampUrl(current)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Bandcamp ↗
+          </a>
+          <button className="ghost" onClick={() => setCurrentId(null)}>
+            changer
+          </button>
+        </div>
       </div>
 
       <div className="ramp">
@@ -184,6 +222,16 @@ export function Live() {
                 <span className="row-score">{Math.round(c.score * 100)}</span>
               </button>
               <div className="votes">
+                <a
+                  className="vote vote-link"
+                  href={bandcampUrl(t)}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Ecouter sur Bandcamp"
+                  title="Ecouter sur Bandcamp"
+                >
+                  ↗
+                </a>
                 <button
                   className={verdict === 'oui' ? 'vote vote-yes' : 'vote'}
                   aria-label="Ca passe"

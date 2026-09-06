@@ -196,10 +196,9 @@ export function Library() {
               className={`swatch${family === f ? ' swatch-on' : ''}`}
               style={{ background: FAMILY_COLOR[f], color: FAMILY_INK[f] }}
               title={`${f} · ${counts.get(f)} morceaux`}
+              aria-label={`${f}, ${counts.get(f)} morceaux`}
               onClick={() => setFamily(family === f ? null : f)}
-            >
-              {f}
-            </button>
+            />
           ))}
           {family && (
             <button className="swatch swatch-clear" onClick={() => setFamily(null)}>

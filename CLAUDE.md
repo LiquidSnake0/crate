@@ -87,6 +87,12 @@ tranche 82 (+15,1 %), 70,08 le premier hors fader (+17,0 %).
 **Le genre n'a pas de colonne : il est porte par la couleur du tag**, dans le
 classeur comme dans l'app. On classe par couleur, pas par code.
 
+**Les pastilles ne portent aucun texte.** Ecrire `M+` a cote de la teinte reviendrait
+a admettre que la teinte ne suffit pas, alors que la palette a justement ete mesuree
+pour se passer d'etiquette. Le code reste en `title` et en `aria-label`.
+Corollaire : `S+` est absent de `PICKABLE_FAMILIES`, car il partage le noir de `S` et
+serait indistinguable sans texte. Il ne compte aucune piste.
+
 Les valeurs de `FAMILY_COLOR` sont lues dans les remplissages de la colonne Tag du
 classeur et validees le 27 aout 2026 par mesure d'ecart DeltaE sur planche imprimee
 (`~/Downloads/planche-palettes.pdf`). **La teinte porte la famille, la clarte porte
@@ -121,14 +127,28 @@ au lieu d'y etre range.** `S+` n'a aucune piste et donc aucune couleur mesuree.
 
 ## D'ou vient le son
 
-`AudioSource` (`src/audio/source.ts`) est une interface, injectee par contexte.
-L'app ne sait pas jouer de la musique, elle sait demander une URL a une source.
+**Selim ecoute dans Bandcamp et revient saisir dans l'app.** C'est son choix, et
+il evite de stocker 1 a 2 Go sur le telephone. Chaque ligne du mode live porte donc
+un lien direct vers la recherche Bandcamp du morceau.
+
+Consequence, et c'est la contrainte qui rend ce choix viable : **l'etat du set est
+persiste** dans la table `state`, onglet actif compris. iOS peut decharger une
+webapp mise en arriere-plan ; revenir sur un ecran vide ou sur le mauvais onglet
+casserait la boucle a chaque ecoute.
+
+Piege a ne pas refaire : `db.state.get('live')` rend `undefined` aussi bien pendant
+le chargement que quand rien n'est enregistre. Les deux cas etaient confondus, la
+restauration ne s'achevait jamais au premier lancement, et la sauvegarde ne partait
+donc jamais. Interroger par `where(...).toArray()` leve l'ambiguite.
+
+La lecture dans l'app reste possible, derriere `AudioSource` (`src/audio/source.ts`),
+une interface injectee par contexte :
 
 - `MockAudioSource` : WAV synthetise a la volee, hauteur suivant la cle et clics
-  suivant le bpm joue. Permet de travailler la boucle de jugement sans un seul
-  fichier. **Source par defaut.**
-- `LocalFileSource` : fichiers importes dans IndexedDB. Autonome, hors ligne, 1 a 2 Go.
-- `BandcampLinkSource` : ouvre le morceau dans Bandcamp, sans le lire. Voir le
+  suivant le bpm joue. Permet de travailler sans un seul fichier. **Source par defaut.**
+- `LocalFileSource` : fichiers importes dans IndexedDB, avec extraction de la
+  pochette depuis la frame APIC. Autonome et hors ligne, mais 1 a 2 Go.
+- `BandcampLinkSource` : ouvre le morceau dans Bandcamp sans le lire. Voir le
   commentaire du fichier pour pourquoi la lecture n'est pas branchable.
 
 ## Etat des donnees au 6 septembre 2026

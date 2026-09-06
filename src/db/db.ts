@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type { Track, AudioBlob, Judgement, Cover } from '../model/types';
+import type { Track, AudioBlob, Judgement, Cover, LiveState } from '../model/types';
 import seed from '../data/seed.json';
 
 // Deux tables, deux durees de vie tres differentes :
@@ -14,6 +14,7 @@ class CrateDb extends Dexie {
   audio!: Table<AudioBlob, string>;
   judgements!: Table<Judgement, string>;
   covers!: Table<Cover, string>;
+  state!: Table<LiveState, string>;
 
   constructor() {
     super('crate');
@@ -31,6 +32,13 @@ class CrateDb extends Dexie {
       audio: 'id',
       judgements: 'id, fromId, toId, verdict',
       covers: 'id',
+    });
+    this.version(4).stores({
+      tracks: 'id, artist, album, side, family, audioId',
+      audio: 'id',
+      judgements: 'id, fromId, toId, verdict',
+      covers: 'id',
+      state: 'id',
     });
   }
 }
@@ -156,6 +164,18 @@ export async function setCover(
   if (existing?.source === 'manuel' && source === 'id3') return false;
   await db.covers.put({ id: discId, blob, source });
   return true;
+}
+
+export async function saveLiveState(s: Partial<Omit<LiveState, 'id'>>): Promise<void> {
+  const current = await db.state.get('live');
+  await db.state.put({
+    id: 'live',
+    currentId: null,
+    chain: [],
+    ramp: 1,
+    ...current,
+    ...s,
+  });
 }
 
 export async function unjudge(fromId: string, toId: string): Promise<void> {

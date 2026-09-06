@@ -18,6 +18,14 @@ export const FAMILIES: readonly Family[] = [
 ];
 
 /**
+ * Les familles proposees a la saisie. `S+` en est absent : il partage le noir
+ * de `S`, donc sans le code ecrit a cote les deux seraient indistinguables, et
+ * il ne compte aucune piste dans le classeur. Le type le garde pour ne pas
+ * casser une donnee existante.
+ */
+export const PICKABLE_FAMILIES: readonly Family[] = FAMILIES.filter((f) => f !== 'S+');
+
+/**
  * Couleurs des stickers physiques, relevees dans le classeur et validees le
  * 27 aout 2026 par mesure d'ecart DeltaE sur planche imprimee. La teinte porte
  * la famille, la clarte porte la nuance. Ne pas les retoucher sans refaire la mesure.
@@ -89,6 +97,20 @@ export interface Cover {
   blob: Blob;
   /** D'ou elle vient, pour savoir si on peut l'ecraser sans perdre un choix manuel. */
   source: 'id3' | 'manuel';
+}
+
+/**
+ * Ou en est le set. Persiste parce que Selim ecoute dans Bandcamp et revient :
+ * sur iPhone une webapp mise en arriere-plan peut etre dechargee, et retrouver
+ * un ecran vide au retour rendrait la boucle inutilisable.
+ */
+export interface LiveState {
+  id: 'live';
+  currentId: string | null;
+  chain: string[];
+  ramp: number;
+  /** L'ecran ouvert. Revenir de Bandcamp sur le mauvais onglet ferait perdre sa place. */
+  tab?: 'crate' | 'live';
 }
 
 export interface AudioBlob {
