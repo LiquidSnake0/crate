@@ -1,0 +1,27 @@
+:root {
+  --bg: #17181a;
+  --panel: #1f2124;
+  --panel-2: #26292d;
+  --line: #33373c;
+  --text: #e8e9ea;
+  --muted: #9aa0a6;
+  --accent: #4ade80;
+  --warn: #e0bb3c;
+  font-family: Montserrat, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-text-size-adjust: 100%;
+}
+
+button, input, select { font: inherit; color: inherit; }
+
+button { cursor: pointer; }
