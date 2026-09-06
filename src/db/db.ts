@@ -124,14 +124,42 @@ export async function updateTrack(id: string, patch: Partial<Track>): Promise<vo
   await db.tracks.update(id, patch);
 }
 
-/** Export sans les blobs : c'est le travail qu'on sauvegarde, pas la musique. */
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result));
+    r.onerror = () => rej(r.error);
+    r.readAsDataURL(blob);
+  });
+}
+
+async function dataUrlToBlob(url: string): Promise<Blob> {
+  return (await fetch(url)).blob();
+}
+
+/**
+ * Export du travail. Il porte les pochettes mais jamais l'audio.
+ *
+ * L'audio pese un a deux Go et se retelecharge ; les pochettes pesent deux Mo
+ * et ont coute une peche sur Bandcamp disque par disque. Sans elles dans le
+ * fichier, changer d'appareil voudrait dire tout recommencer, et c'est
+ * justement ce que l'export doit eviter.
+ */
 export async function exportJson(): Promise<string> {
-  const [tracks, judgements] = await Promise.all([
+  const [tracks, judgements, coverRows] = await Promise.all([
     db.tracks.toArray(),
     db.judgements.toArray(),
+    db.covers.toArray(),
   ]);
+  const covers = await Promise.all(
+    coverRows.map(async (c) => ({
+      id: c.id,
+      source: c.source,
+      data: await blobToDataUrl(c.blob),
+    })),
+  );
   return JSON.stringify(
-    { version: 2, exportedAt: new Date().toISOString(), tracks, judgements },
+    { version: 3, exportedAt: new Date().toISOString(), tracks, judgements, covers },
     null,
     1,
   );
@@ -208,13 +236,31 @@ export async function addTrack(
   return track;
 }
 
-export async function importJson(text: string): Promise<number> {
-  const parsed = JSON.parse(text) as { tracks?: Track[]; judgements?: Judgement[] };
+export interface ImportJsonReport {
+  tracks: number;
+  judgements: number;
+  covers: number;
+}
+
+export async function importJson(text: string): Promise<ImportJsonReport> {
+  const parsed = JSON.parse(text) as {
+    tracks?: Track[];
+    judgements?: Judgement[];
+    covers?: { id: string; source: Cover['source']; data: string }[];
+  };
   if (!Array.isArray(parsed.tracks)) throw new Error('Fichier illisible : pas de tableau `tracks`.');
+
   // Les audioId du fichier ne valent rien sur cet appareil : on garde ceux d'ici.
   const existing = new Map((await db.tracks.toArray()).map((t) => [t.id, t.audioId]));
   const merged = parsed.tracks.map((t) => ({ ...t, audioId: existing.get(t.id) ?? null }));
   await db.tracks.bulkPut(merged);
+
   if (Array.isArray(parsed.judgements)) await db.judgements.bulkPut(parsed.judgements);
-  return merged.length;
+
+  let covers = 0;
+  for (const c of parsed.covers ?? []) {
+    // Une pochette posee a la main sur cet appareil reste prioritaire.
+    if (await setCover(c.id, await dataUrlToBlob(c.data), c.source)) covers += 1;
+  }
+  return { tracks: merged.length, judgements: parsed.judgements?.length ?? 0, covers };
 }

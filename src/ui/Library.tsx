@@ -176,7 +176,11 @@ export function Library() {
                 const file = e.target.files?.[0];
                 if (!file) return;
                 try {
-                  setNotice(`${await importJson(await file.text())} morceaux restaures.`);
+                  const r = await importJson(await file.text());
+                  setNotice(
+                    `${r.tracks} morceaux restaures, ${r.covers} pochettes, ` +
+                      `${r.judgements} jugements.`,
+                  );
                 } catch (err) {
                   setNotice(`Restauration impossible : ${(err as Error).message}`);
                 }

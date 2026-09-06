@@ -117,10 +117,14 @@ au lieu d'y etre range.** `S+` n'a aucune piste et donc aucune couleur mesuree.
 - **Pas de File System Access API dans Safari iOS.** On ne peut pas pointer un dossier
   et le garder. Le seul chemin est le selecteur de fichiers, qui rend des `File` que
   l'on copie dans IndexedDB. Ajouter un album implique de reimporter.
-- **Safari peut evincer le stockage sous pression disque.** D'ou la separation stricte :
-  `tracks` est le travail (quelques dizaines de Ko, precieux, exporte en JSON),
-  `audio` est le contenu (1 a 2 Go, jetable, reimportable). Perdre `audio` doit etre
-  un non-evenement.
+- **Safari peut evincer le stockage sous pression disque.** D'ou le partage : ce qui
+  est cher a refaire entre dans l'export, ce qui se retelecharge n'y entre pas.
+  **L'export porte les morceaux, les jugements et les pochettes** (environ 2,8 Mo),
+  **jamais l'audio** (1 a 2 Go). Les pochettes ont coute une peche disque par disque
+  sur Bandcamp : sans elles dans le fichier, changer d'appareil voudrait dire tout
+  recommencer, et c'est exactement ce que l'export doit eviter.
+- **Chaque origine a sa propre base.** `localhost` et `liquidsnake0.github.io` ne
+  partagent rien, l'iPhone non plus. Le fichier d'export est le seul pont.
 - **L'enchainement part de l'evenement `ended`, jamais d'un timer.** Safari suspend le
   JS quand l'ecran se verrouille mais laisse passer les evenements media. Corollaire :
   juger un enchainement ne peut pas se faire ecran verrouille.
@@ -160,7 +164,21 @@ main : 114 faces, 4 couleurs, 4 cles et 4 BPM.
 
 ## Les pochettes
 
-Trois chemins, du plus large au plus fin :
+**Elles sont deja posees, les 24.** Recuperees le 6 septembre 2026 depuis les pages
+d'album Bandcamp. Les originaux pleine resolution sont dans `~/Documents/crate-pochettes`,
+hors du depot : ce sont des oeuvres sous droits, elles n'ont rien a faire dans un
+depot public.
+
+Deux pieges rencontres ce jour-la, a ne pas refaire :
+- **La collection Bandcamp de Selim est vide** (`collection_count: 0`). Ses disques ne
+  sont pas des achats rattaches a son compte, il n'y a rien a extraire de son profil.
+  Les pages d'album publiques, elles, portent tout.
+- **L'API `autocomplete_elastic` rend un champ `img` qui pointe sur une URL 404.**
+  L'art d'album porte un prefixe `a` : `f4.bcbits.com/img/a<id>_10.jpg`. La source
+  fiable est la balise `og:image` de la page de l'album, dont on remplace le suffixe
+  de taille par `_10` pour la pleine resolution.
+
+Trois chemins pour en poser de nouvelles, du plus large au plus fin :
 
 1. **Un dossier entier** (`webkitdirectory`). Les images telechargees de Bandcamp
    s'appellent rarement d'apres l'album, souvent `cover.jpg` : **ce qui porte le nom
