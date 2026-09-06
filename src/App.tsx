@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { seedIfEmpty } from './db/db';
+import { AudioSourceProvider } from './audio/context';
 import { Library } from './ui/Library';
 import './App.css';
 
@@ -11,5 +12,9 @@ export default function App() {
   }, []);
 
   if (!ready) return <p className="loading">Ouverture du crate...</p>;
-  return <Library />;
+  return (
+    <AudioSourceProvider>
+      <Library />
+    </AudioSourceProvider>
+  );
 }

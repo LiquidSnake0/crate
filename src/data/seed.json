@@ -8,7 +8,7 @@
   "bpm": 76.87,
   "anchorBpm": 82.0,
   "side": null,
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓3B"
  },
  {
@@ -20,7 +20,7 @@
   "bpm": 77.57,
   "anchorBpm": 82.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "↓12A"
  },
  {
@@ -32,7 +32,7 @@
   "bpm": 83.32,
   "anchorBpm": 85.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "•11A"
  },
  {
@@ -44,7 +44,7 @@
   "bpm": 84.74,
   "anchorBpm": 85.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "•12A"
  },
  {
@@ -56,7 +56,7 @@
   "bpm": 90.15,
   "anchorBpm": 90.15,
   "side": null,
-  "family": null,
+  "family": "M+",
   "legacyTag": "•9A"
  },
  {
@@ -68,7 +68,7 @@
   "bpm": 91.64,
   "anchorBpm": 91.64,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "•10A"
  },
  {
@@ -80,7 +80,7 @@
   "bpm": 93.8,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "↑1A"
  },
  {
@@ -92,7 +92,7 @@
   "bpm": 82.64,
   "anchorBpm": 85.0,
   "side": null,
-  "family": null,
+  "family": "M+",
   "legacyTag": "•9A"
  },
  {
@@ -104,7 +104,7 @@
   "bpm": 95.85,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "S-",
   "legacyTag": "↑5A"
  },
  {
@@ -116,7 +116,7 @@
   "bpm": 88.36,
   "anchorBpm": 88.36,
   "side": null,
-  "family": null,
+  "family": "M+",
   "legacyTag": "•4A"
  },
  {
@@ -128,7 +128,7 @@
   "bpm": 84.73,
   "anchorBpm": 85.0,
   "side": null,
-  "family": null,
+  "family": "M+",
   "legacyTag": "•7A"
  },
  {
@@ -140,7 +140,7 @@
   "bpm": 73.92,
   "anchorBpm": 82.0,
   "side": null,
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓4A!"
  },
  {
@@ -152,7 +152,7 @@
   "bpm": 77.67,
   "anchorBpm": 82.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "↓3A"
  },
  {
@@ -164,7 +164,7 @@
   "bpm": 78.94,
   "anchorBpm": 82.0,
   "side": null,
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓10B"
  },
  {
@@ -176,7 +176,7 @@
   "bpm": 96.86,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "↑12A"
  },
  {
@@ -188,7 +188,7 @@
   "bpm": 95.6,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "B",
   "legacyTag": "↑4A"
  },
  {
@@ -200,7 +200,7 @@
   "bpm": 99.48,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "↑9A"
  },
  {
@@ -212,7 +212,7 @@
   "bpm": 95.83,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "↑11A"
  },
  {
@@ -224,7 +224,7 @@
   "bpm": 81.69,
   "anchorBpm": 82.0,
   "side": null,
-  "family": null,
+  "family": "M-",
   "legacyTag": "↓9B"
  },
  {
@@ -236,7 +236,7 @@
   "bpm": 68.44,
   "anchorBpm": 68.44,
   "side": null,
-  "family": null,
+  "family": "R",
   "legacyTag": "⚠11A"
  },
  {
@@ -248,7 +248,7 @@
   "bpm": 94.63,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "↑12A"
  },
  {
@@ -260,7 +260,7 @@
   "bpm": 101.66,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "M+",
   "legacyTag": "↑6A"
  },
  {
@@ -272,7 +272,7 @@
   "bpm": 97.18,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "↑1B"
  },
  {
@@ -284,7 +284,7 @@
   "bpm": 99.98,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "↑5A"
  },
  {
@@ -296,7 +296,7 @@
   "bpm": 75.7,
   "anchorBpm": 82.0,
   "side": null,
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓1A!"
  },
  {
@@ -308,7 +308,7 @@
   "bpm": 78.42,
   "anchorBpm": 82.0,
   "side": null,
-  "family": null,
+  "family": "B-",
   "legacyTag": "↓1A"
  },
  {
@@ -320,7 +320,7 @@
   "bpm": 74.16,
   "anchorBpm": 82.0,
   "side": null,
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓9A!"
  },
  {
@@ -332,7 +332,7 @@
   "bpm": 102.79,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "V",
   "legacyTag": "↑9A"
  },
  {
@@ -344,7 +344,7 @@
   "bpm": 76.99,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓1A"
  },
  {
@@ -356,7 +356,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M-",
   "legacyTag": "↓10A"
  },
  {
@@ -368,7 +368,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓3A"
  },
  {
@@ -380,7 +380,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "•7A"
  },
  {
@@ -392,7 +392,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "B",
   "legacyTag": "•2A"
  },
  {
@@ -404,7 +404,7 @@
   "bpm": 97.0,
   "anchorBpm": 97.0,
   "side": "B",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↑12A"
  },
  {
@@ -416,7 +416,7 @@
   "bpm": 134.01,
   "anchorBpm": 134.01,
   "side": "B",
-  "family": null,
+  "family": "S",
   "legacyTag": "★12A"
  },
  {
@@ -428,7 +428,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓11A"
  },
  {
@@ -440,7 +440,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓5A"
  },
  {
@@ -452,7 +452,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓7A"
  },
  {
@@ -464,7 +464,7 @@
   "bpm": 70.0,
   "anchorBpm": 70.0,
   "side": "A",
-  "family": null,
+  "family": "B-",
   "legacyTag": "⚠11A"
  },
  {
@@ -476,7 +476,7 @@
   "bpm": 91.6,
   "anchorBpm": 91.6,
   "side": "A",
-  "family": null,
+  "family": "B",
   "legacyTag": "•5A"
  },
  {
@@ -488,7 +488,7 @@
   "bpm": 92.0,
   "anchorBpm": 92.0,
   "side": "A",
-  "family": null,
+  "family": "B-",
   "legacyTag": "•6A"
  },
  {
@@ -500,7 +500,7 @@
   "bpm": 86.0,
   "anchorBpm": 86.0,
   "side": "A",
-  "family": null,
+  "family": "B",
   "legacyTag": "•7B"
  },
  {
@@ -512,7 +512,7 @@
   "bpm": 100.0,
   "anchorBpm": 97.0,
   "side": "A",
-  "family": null,
+  "family": "B-",
   "legacyTag": "↑4A"
  },
  {
@@ -524,7 +524,7 @@
   "bpm": 65.0,
   "anchorBpm": 65.0,
   "side": "A",
-  "family": null,
+  "family": "B",
   "legacyTag": "⚠3A"
  },
  {
@@ -536,7 +536,7 @@
   "bpm": 58.0,
   "anchorBpm": 58.0,
   "side": "B",
-  "family": null,
+  "family": "B",
   "legacyTag": "⚠11A"
  },
  {
@@ -548,7 +548,7 @@
   "bpm": 92.0,
   "anchorBpm": 92.0,
   "side": "B",
-  "family": null,
+  "family": "M",
   "legacyTag": "•10A"
  },
  {
@@ -560,7 +560,7 @@
   "bpm": 82.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "B-",
   "legacyTag": "↓9A"
  },
  {
@@ -572,7 +572,7 @@
   "bpm": 86.0,
   "anchorBpm": 86.0,
   "side": "B",
-  "family": null,
+  "family": "B",
   "legacyTag": "•9A"
  },
  {
@@ -584,7 +584,7 @@
   "bpm": 66.0,
   "anchorBpm": 66.0,
   "side": "B",
-  "family": null,
+  "family": "B",
   "legacyTag": "⚠7A"
  },
  {
@@ -596,7 +596,7 @@
   "bpm": 64.0,
   "anchorBpm": 64.0,
   "side": "B",
-  "family": null,
+  "family": "R",
   "legacyTag": "⚠2A"
  },
  {
@@ -608,7 +608,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•3A"
  },
  {
@@ -620,7 +620,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓7A"
  },
  {
@@ -632,7 +632,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•8A"
  },
  {
@@ -644,7 +644,7 @@
   "bpm": 97.0,
   "anchorBpm": 97.0,
   "side": "A",
-  "family": null,
+  "family": "B+",
   "legacyTag": "↑3A"
  },
  {
@@ -656,7 +656,7 @@
   "bpm": 82.01,
   "anchorBpm": 85.0,
   "side": "B",
-  "family": null,
+  "family": "M",
   "legacyTag": "•3A"
  },
  {
@@ -668,7 +668,7 @@
   "bpm": 66.99,
   "anchorBpm": 66.99,
   "side": "B",
-  "family": null,
+  "family": "B-",
   "legacyTag": "⚠5A"
  },
  {
@@ -680,7 +680,7 @@
   "bpm": 76.14,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M-",
   "legacyTag": "↓2A"
  },
  {
@@ -692,7 +692,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M-",
   "legacyTag": "↓10A"
  },
  {
@@ -704,7 +704,7 @@
   "bpm": 72.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "R",
   "legacyTag": "↓8A!"
  },
  {
@@ -716,7 +716,7 @@
   "bpm": 85.49,
   "anchorBpm": 85.49,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "•10A"
  },
  {
@@ -728,7 +728,7 @@
   "bpm": 147.65,
   "anchorBpm": 147.65,
   "side": "A",
-  "family": null,
+  "family": "S",
   "legacyTag": "★6A"
  },
  {
@@ -740,7 +740,7 @@
   "bpm": 94.05,
   "anchorBpm": 97.0,
   "side": "B",
-  "family": null,
+  "family": "M",
   "legacyTag": "↑3A"
  },
  {
@@ -752,7 +752,7 @@
   "bpm": 88.36,
   "anchorBpm": 88.36,
   "side": "B",
-  "family": null,
+  "family": "M",
   "legacyTag": "•2A"
  },
  {
@@ -764,7 +764,7 @@
   "bpm": 82.86,
   "anchorBpm": 85.0,
   "side": "B",
-  "family": null,
+  "family": "M-",
   "legacyTag": "•1A"
  },
  {
@@ -776,7 +776,7 @@
   "bpm": 84.43,
   "anchorBpm": 85.0,
   "side": "C",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•1A"
  },
  {
@@ -788,7 +788,7 @@
   "bpm": 87.67,
   "anchorBpm": 87.67,
   "side": "C",
-  "family": null,
+  "family": "M",
   "legacyTag": "•9B"
  },
  {
@@ -800,7 +800,7 @@
   "bpm": 74.38,
   "anchorBpm": 82.0,
   "side": "C",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓9A!"
  },
  {
@@ -812,7 +812,7 @@
   "bpm": 93.72,
   "anchorBpm": 97.0,
   "side": "D",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↑4B"
  },
  {
@@ -824,7 +824,7 @@
   "bpm": 109.22,
   "anchorBpm": 97.0,
   "side": "D",
-  "family": null,
+  "family": "V",
   "legacyTag": "↑9A!"
  },
  {
@@ -836,7 +836,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓7A"
  },
  {
@@ -848,7 +848,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•8A"
  },
  {
@@ -860,7 +860,7 @@
   "bpm": 76.99,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "B-",
   "legacyTag": "↓11A"
  },
  {
@@ -872,7 +872,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M-",
   "legacyTag": "↓4A"
  },
  {
@@ -884,7 +884,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓8A"
  },
  {
@@ -896,7 +896,7 @@
   "bpm": 76.99,
   "anchorBpm": 82.0,
   "side": "C",
-  "family": null,
+  "family": "M-",
   "legacyTag": "↓2A"
  },
  {
@@ -908,7 +908,7 @@
   "bpm": 97.0,
   "anchorBpm": 97.0,
   "side": "C",
-  "family": null,
+  "family": "S-",
   "legacyTag": "↑4A"
  },
  {
@@ -920,7 +920,7 @@
   "bpm": 137.0,
   "anchorBpm": 137.0,
   "side": "C",
-  "family": null,
+  "family": "S",
   "legacyTag": "★3A"
  },
  {
@@ -932,7 +932,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "D",
-  "family": null,
+  "family": "B-",
   "legacyTag": "•7A"
  },
  {
@@ -968,7 +968,7 @@
   "bpm": 90.0,
   "anchorBpm": 90.0,
   "side": "A",
-  "family": null,
+  "family": "M-",
   "legacyTag": "•1A"
  },
  {
@@ -980,7 +980,7 @@
   "bpm": 85.0,
   "anchorBpm": 85.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•12A"
  },
  {
@@ -992,7 +992,7 @@
   "bpm": 86.0,
   "anchorBpm": 86.0,
   "side": "A",
-  "family": null,
+  "family": "M-",
   "legacyTag": "•4A"
  },
  {
@@ -1004,7 +1004,7 @@
   "bpm": 80.0,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "B+",
   "legacyTag": "↓2A"
  },
  {
@@ -1016,7 +1016,7 @@
   "bpm": 93.0,
   "anchorBpm": 97.0,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "↑7A"
  },
  {
@@ -1028,7 +1028,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•5B"
  },
  {
@@ -1040,7 +1040,7 @@
   "bpm": 80.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "B",
   "legacyTag": "↓2A"
  },
  {
@@ -1052,7 +1052,7 @@
   "bpm": 85.0,
   "anchorBpm": 85.0,
   "side": "B",
-  "family": null,
+  "family": "B-",
   "legacyTag": "•1A"
  },
  {
@@ -1064,7 +1064,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "B",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•4A"
  },
  {
@@ -1076,7 +1076,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "B",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•10A"
  },
  {
@@ -1088,7 +1088,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "B-",
   "legacyTag": "•1A"
  },
  {
@@ -1100,7 +1100,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•10A"
  },
  {
@@ -1112,7 +1112,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•2A"
  },
  {
@@ -1124,7 +1124,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•5A"
  },
  {
@@ -1136,7 +1136,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•9A"
  },
  {
@@ -1148,7 +1148,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "B",
   "legacyTag": "•2A"
  },
  {
@@ -1160,7 +1160,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "B",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•5A"
  },
  {
@@ -1172,7 +1172,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "B",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•12A"
  },
  {
@@ -1184,7 +1184,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "B",
-  "family": null,
+  "family": "B",
   "legacyTag": "•4A"
  },
  {
@@ -1196,7 +1196,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓8A"
  },
  {
@@ -1208,7 +1208,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "B",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•4B"
  },
  {
@@ -1220,7 +1220,7 @@
   "bpm": 86.99,
   "anchorBpm": 86.99,
   "side": "A",
-  "family": null,
+  "family": "M-",
   "legacyTag": "•9A"
  },
  {
@@ -1232,7 +1232,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓8A"
  },
  {
@@ -1244,7 +1244,7 @@
   "bpm": 77.01,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓7A"
  },
  {
@@ -1256,7 +1256,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓5B"
  },
  {
@@ -1268,7 +1268,7 @@
   "bpm": 75.07,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓3B!"
  },
  {
@@ -1280,7 +1280,7 @@
   "bpm": 68.35,
   "anchorBpm": 68.35,
   "side": "B",
-  "family": null,
+  "family": "R",
   "legacyTag": "⚠11B"
  },
  {
@@ -1292,7 +1292,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "C",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓11A"
  },
  {
@@ -1304,7 +1304,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "C",
-  "family": null,
+  "family": "M-",
   "legacyTag": "↓6A"
  },
  {
@@ -1316,7 +1316,7 @@
   "bpm": 134.0,
   "anchorBpm": 134.0,
   "side": "C",
-  "family": null,
+  "family": "S",
   "legacyTag": "★10A"
  },
  {
@@ -1328,7 +1328,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "D",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓7A"
  },
  {
@@ -1340,7 +1340,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "D",
-  "family": null,
+  "family": "M-",
   "legacyTag": "•1A"
  },
  {
@@ -1352,7 +1352,7 @@
   "bpm": 68.5,
   "anchorBpm": 68.5,
   "side": "D",
-  "family": null,
+  "family": "R",
   "legacyTag": "⚠5A"
  },
  {
@@ -1364,7 +1364,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓7A"
  },
  {
@@ -1376,7 +1376,7 @@
   "bpm": 134.0,
   "anchorBpm": 134.0,
   "side": "A",
-  "family": null,
+  "family": "S",
   "legacyTag": "★8A"
  },
  {
@@ -1388,7 +1388,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "B",
   "legacyTag": "•4A"
  },
  {
@@ -1400,7 +1400,7 @@
   "bpm": 97.0,
   "anchorBpm": 97.0,
   "side": "B",
-  "family": null,
+  "family": "S-",
   "legacyTag": "↑10A"
  },
  {
@@ -1412,7 +1412,7 @@
   "bpm": 68.5,
   "anchorBpm": 68.5,
   "side": "B",
-  "family": null,
+  "family": "R",
   "legacyTag": "⚠8A"
  },
  {
@@ -1424,7 +1424,7 @@
   "bpm": 97.0,
   "anchorBpm": 97.0,
   "side": "B",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↑7A"
  },
  {
@@ -1436,7 +1436,7 @@
   "bpm": 79.7,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M-",
   "legacyTag": "↓7A"
  },
  {
@@ -1448,7 +1448,7 @@
   "bpm": 77.01,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M-",
   "legacyTag": "↓3A"
  },
  {
@@ -1460,7 +1460,7 @@
   "bpm": 88.84,
   "anchorBpm": 88.84,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "•7A"
  },
  {
@@ -1472,7 +1472,7 @@
   "bpm": 97.51,
   "anchorBpm": 97.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↑3A"
  },
  {
@@ -1484,7 +1484,7 @@
   "bpm": 73.78,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M-",
   "legacyTag": "↓2A!"
  },
  {
@@ -1496,7 +1496,7 @@
   "bpm": 97.2,
   "anchorBpm": 97.0,
   "side": "B",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↑7A"
  },
  {
@@ -1508,7 +1508,7 @@
   "bpm": 68.06,
   "anchorBpm": 68.06,
   "side": "B",
-  "family": null,
+  "family": "B-",
   "legacyTag": "⚠2A"
  },
  {
@@ -1520,7 +1520,7 @@
   "bpm": 79.84,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓1A"
  },
  {
@@ -1532,7 +1532,7 @@
   "bpm": 83.7,
   "anchorBpm": 85.0,
   "side": "A",
-  "family": null,
+  "family": "B",
   "legacyTag": "•3A"
  },
  {
@@ -1544,7 +1544,7 @@
   "bpm": 79.28,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓9A"
  },
  {
@@ -1556,7 +1556,7 @@
   "bpm": 88.72,
   "anchorBpm": 88.72,
   "side": "A",
-  "family": null,
+  "family": "B-",
   "legacyTag": "•4B"
  },
  {
@@ -1568,7 +1568,7 @@
   "bpm": 84.09,
   "anchorBpm": 85.0,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "•9A"
  },
  {
@@ -1580,7 +1580,7 @@
   "bpm": 71.27,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "B",
   "legacyTag": "↓11A!"
  },
  {
@@ -1592,7 +1592,7 @@
   "bpm": 84.09,
   "anchorBpm": 85.0,
   "side": "A",
-  "family": null,
+  "family": "M-",
   "legacyTag": "•6A"
  },
  {
@@ -1604,7 +1604,7 @@
   "bpm": 80.18,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓6A"
  },
  {
@@ -1616,7 +1616,7 @@
   "bpm": 89.09,
   "anchorBpm": 89.09,
   "side": "B",
-  "family": null,
+  "family": "M",
   "legacyTag": "•5A"
  },
  {
@@ -1628,7 +1628,7 @@
   "bpm": 85.89,
   "anchorBpm": 85.89,
   "side": "B",
-  "family": null,
+  "family": "M-",
   "legacyTag": "•1A"
  },
  {
@@ -1640,7 +1640,7 @@
   "bpm": 76.1,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "B-",
   "legacyTag": "↓6A"
  },
  {
@@ -1652,7 +1652,7 @@
   "bpm": 81.87,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "B-",
   "legacyTag": "↓7A"
  },
  {
@@ -1664,7 +1664,7 @@
   "bpm": 85.89,
   "anchorBpm": 85.89,
   "side": "B",
-  "family": null,
+  "family": "B-",
   "legacyTag": "•4A"
  },
  {
@@ -1676,7 +1676,7 @@
   "bpm": 85.0,
   "anchorBpm": 85.0,
   "side": "A",
-  "family": null,
+  "family": "B",
   "legacyTag": "•7A"
  },
  {
@@ -1688,7 +1688,7 @@
   "bpm": 80.0,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "↓6A"
  },
  {
@@ -1700,7 +1700,7 @@
   "bpm": 80.0,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "B-",
   "legacyTag": "↓2B"
  },
  {
@@ -1712,7 +1712,7 @@
   "bpm": 80.0,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "B",
   "legacyTag": "↓8A"
  },
  {
@@ -1724,7 +1724,7 @@
   "bpm": 81.03,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "B",
   "legacyTag": "↓12A"
  },
  {
@@ -1736,7 +1736,7 @@
   "bpm": 85.0,
   "anchorBpm": 85.0,
   "side": "A",
-  "family": null,
+  "family": "B",
   "legacyTag": "•3A"
  },
  {
@@ -1760,7 +1760,7 @@
   "bpm": 80.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "B",
   "legacyTag": "↓4A"
  },
  {
@@ -1772,7 +1772,7 @@
   "bpm": 90.0,
   "anchorBpm": 90.0,
   "side": "B",
-  "family": null,
+  "family": "B+",
   "legacyTag": "•2A"
  },
  {
@@ -1784,7 +1784,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "B",
-  "family": null,
+  "family": "M-",
   "legacyTag": "•1A"
  },
  {
@@ -1796,7 +1796,7 @@
   "bpm": 82.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "B",
   "legacyTag": "↓6A"
  },
  {
@@ -1808,7 +1808,7 @@
   "bpm": 72.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "B",
   "legacyTag": "↓10A!"
  },
  {
@@ -1832,7 +1832,7 @@
   "bpm": 80.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓4A"
  },
  {
@@ -1844,7 +1844,7 @@
   "bpm": 134.0,
   "anchorBpm": 134.0,
   "side": "A",
-  "family": null,
+  "family": "S",
   "legacyTag": "★2A"
  },
  {
@@ -1856,7 +1856,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "M+",
   "legacyTag": "•11A"
  },
  {
@@ -1868,7 +1868,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "•10A"
  },
  {
@@ -1880,7 +1880,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "•6A"
  },
  {
@@ -1892,7 +1892,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "A",
-  "family": null,
+  "family": "M",
   "legacyTag": "↓5A"
  },
  {
@@ -1904,7 +1904,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "B",
   "legacyTag": "↓1A"
  },
  {
@@ -1916,7 +1916,7 @@
   "bpm": 77.0,
   "anchorBpm": 82.0,
   "side": "B",
-  "family": null,
+  "family": "B",
   "legacyTag": "↓8A"
  },
  {
@@ -1928,7 +1928,7 @@
   "bpm": 107.0,
   "anchorBpm": 97.0,
   "side": "B",
-  "family": null,
+  "family": "V",
   "legacyTag": "↑2A!"
  },
  {
@@ -1940,7 +1940,7 @@
   "bpm": 97.0,
   "anchorBpm": 97.0,
   "side": "B",
-  "family": null,
+  "family": "M",
   "legacyTag": "↑7B"
  },
  {
@@ -1952,7 +1952,7 @@
   "bpm": 133.94,
   "anchorBpm": 133.94,
   "side": "B",
-  "family": null,
+  "family": "S",
   "legacyTag": "★7A"
  },
  {
@@ -1964,7 +1964,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "•5A"
  },
  {
@@ -1976,7 +1976,7 @@
   "bpm": 69.87,
   "anchorBpm": 69.87,
   "side": null,
-  "family": null,
+  "family": "B-",
   "legacyTag": "⚠10A"
  },
  {
@@ -1988,7 +1988,7 @@
   "bpm": 70.08,
   "anchorBpm": 70.08,
   "side": null,
-  "family": null,
+  "family": "B",
   "legacyTag": "⚠2A"
  },
  {
@@ -2000,7 +2000,7 @@
   "bpm": 85.44,
   "anchorBpm": 85.44,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "•5A"
  },
  {
@@ -2012,7 +2012,7 @@
   "bpm": 97.0,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "M+",
   "legacyTag": "↑4A"
  },
  {
@@ -2024,7 +2024,7 @@
   "bpm": 87.0,
   "anchorBpm": 87.0,
   "side": null,
-  "family": null,
+  "family": "M-",
   "legacyTag": "•8A"
  },
  {
@@ -2036,7 +2036,7 @@
   "bpm": 93.08,
   "anchorBpm": 97.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "↑11A"
  },
  {
@@ -2048,7 +2048,7 @@
   "bpm": 78.97,
   "anchorBpm": 82.0,
   "side": null,
-  "family": null,
+  "family": "M-",
   "legacyTag": "↓1A"
  },
  {
@@ -2060,7 +2060,7 @@
   "bpm": 82.97,
   "anchorBpm": 85.0,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "•3A"
  },
  {
@@ -2072,7 +2072,7 @@
   "bpm": 87.07,
   "anchorBpm": 87.07,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "•7A"
  },
  {
@@ -2084,7 +2084,7 @@
   "bpm": 88.8,
   "anchorBpm": 88.8,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "•8A"
  },
  {
@@ -2096,7 +2096,7 @@
   "bpm": 90.9,
   "anchorBpm": 90.9,
   "side": null,
-  "family": null,
+  "family": "M",
   "legacyTag": "•9A"
  },
  {
@@ -2108,7 +2108,7 @@
   "bpm": 86.47,
   "anchorBpm": 86.47,
   "side": null,
-  "family": null,
+  "family": "M-",
   "legacyTag": "•8A"
  },
  {
@@ -2120,7 +2120,7 @@
   "bpm": 85.69,
   "anchorBpm": 85.69,
   "side": null,
-  "family": null,
+  "family": "M-",
   "legacyTag": "•11A"
  },
  {
@@ -2132,7 +2132,7 @@
   "bpm": 84.19,
   "anchorBpm": 85.0,
   "side": null,
-  "family": null,
+  "family": "M-",
   "legacyTag": "•8A"
  },
  {
@@ -2144,7 +2144,7 @@
   "bpm": 83.9,
   "anchorBpm": 85.0,
   "side": null,
-  "family": null,
+  "family": "M-",
   "legacyTag": "•12A"
  },
  {

@@ -44,13 +44,14 @@ interface SeedRow {
 }
 
 /**
- * Ne s'execute qu'une fois, sur une base vide. Reouvrir l'app ne doit jamais
- * ecraser une correction faite a la main.
+ * Complete la base avec le seed sans jamais ecraser une correction.
+ *
+ * Sur une base vide, remplit tout. Sur une base deja travaillee, n'ecrit que
+ * dans les champs restes vides et n'ajoute que les morceaux absents. Un seed
+ * enrichi peut donc etre rejoue a tout moment : le travail fait a la main gagne
+ * toujours sur la donnee importee.
  */
-export async function seedIfEmpty(): Promise<number> {
-  const count = await db.tracks.count();
-  if (count > 0) return 0;
-
+export async function seedIfEmpty(): Promise<{ added: number; filled: number }> {
   const rows = (seed as SeedRow[]).map((r) => ({
     id: trackId(r),
     artist: r.artist,
@@ -67,8 +68,35 @@ export async function seedIfEmpty(): Promise<number> {
     audioId: null,
   })) satisfies Track[];
 
-  await db.tracks.bulkPut(rows);
-  return rows.length;
+  const existing = new Map((await db.tracks.toArray()).map((t) => [t.id, t]));
+  const toWrite: Track[] = [];
+  let added = 0;
+  let filled = 0;
+
+  for (const row of rows) {
+    const cur = existing.get(row.id);
+    if (!cur) {
+      toWrite.push(row);
+      added += 1;
+      continue;
+    }
+    const merged: Track = {
+      ...cur,
+      key: cur.key ?? row.key,
+      bpm: cur.bpm ?? row.bpm,
+      anchorBpm: cur.anchorBpm ?? row.anchorBpm,
+      side: cur.side ?? row.side,
+      family: cur.family ?? row.family,
+      legacyTag: cur.legacyTag ?? row.legacyTag,
+    };
+    if (JSON.stringify(merged) !== JSON.stringify(cur)) {
+      toWrite.push(merged);
+      filled += 1;
+    }
+  }
+
+  if (toWrite.length > 0) await db.tracks.bulkPut(toWrite);
+  return { added, filled };
 }
 
 export async function updateTrack(id: string, patch: Partial<Track>): Promise<void> {

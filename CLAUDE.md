@@ -31,22 +31,50 @@ Vite + React + TypeScript, Dexie (IndexedDB), zero backend. Vitest pour les test
 - **Un fichier importe qui ne correspond a aucun morceau n'est pas ajoute au crate.**
   Le crate est la liste physique des disques, pas le contenu d'un dossier.
 
-## Grammaire des tags, relevee dans le Sheet
+## Les trois tranches, arretees le 26 aout 2026
 
-| Prefixe | Sens | Occurrences |
+**La fleche designe la tranche, pas la direction du fader.** La direction se regle
+a l'oreille au beatmatch ; la tranche est un etat porte toute la soiree, qu'il faut
+relire d'un coup d'oeil sur l'etiquette. Ne pas re-proposer d'y mettre la direction.
+
+| Prefixe | Tranche | BPM natif | BPM joue | n |
+|---|---|---|---|---|
+| `↓` | 82 | jusqu'a 82 | 82 | 81 |
+| `•` | 92, transition | 82 a 92 | son tempo, 85 minimum | 102 |
+| `↑` | 97 | 92 a 110 | 97 | 35 |
+| `★` | special | 122 a 150 | inchange | 7 |
+| `⚠` | hors fader | trop lent pour sa tranche | natif | 20 |
+
+Le fader d'une PLX MK7 fait +-8 % par defaut et +-16 % en mode etendu :
+- `!` = depasse 8 %, **passer la platine en +-16 avant de lancer** (18 morceaux) ;
+- `⚠` = depasse 16 %, la platine ne suit pas, le morceau se joue natif (20 morceaux).
+
+Frontiere mesuree sur le classeur : 71,27 BPM est le dernier morceau jouable en
+tranche 82 (+15,1 %), 70,08 le premier hors fader (+17,0 %).
+
+## Les couleurs
+
+**Le genre n'a pas de colonne : il est porte par la couleur du tag**, dans le
+classeur comme dans l'app. On classe par couleur, pas par code.
+
+Les valeurs de `FAMILY_COLOR` sont lues dans les remplissages de la colonne Tag du
+classeur et validees le 27 aout 2026 par mesure d'ecart DeltaE sur planche imprimee
+(`~/Downloads/planche-palettes.pdf`). **La teinte porte la famille, la clarte porte
+la nuance, jamais l'inverse.** Ne pas les retoucher sans refaire la mesure.
+
+| Famille | Couleur | n |
 |---|---|---|
-| `↓` | palier bas, 82 BPM | 81 |
-| `•` | palier median, 85 a 91, ou BPM natif | 102 |
-| `↑` | palier haut, 97 BPM | 35 |
-| `!` | pitch superieur a 8 % | 18 |
-| `⚠` | trop lent pour tout palier, joue natif | 20 |
-| `★` | jungle, 134 a 147, crate separe | 7 |
+| `M-` / `M` / `M+` | `#7FB3D5` / `#2E86C1` / `#154360` | 46 / 75 / 52 |
+| `B-` / `B` / `B+` | `#C0CA33` / `#689F38` / `#33691E` | 19 / 25 / 3 |
+| `R` | `#EC407A` | 10 |
+| `V` | `#6A1B9A` | 5 |
+| `S-` (pont ~97, pas un special) | `#FFB74D` | 3 |
+| `S` (130-140) | `#000000`, blanc sur noir | 7 |
 
-## Familles
-
-`R`, `M-`, `M`, `M+`, `B-`, `B`, `B+`, `S-`, `S`, `S+`, `V`. Codes tels qu'ils sont
-ecrits dans le Sheet. Les couleurs de `FAMILY_COLOR` sont celles des stickers
-physiques : ne pas les changer.
+Le B etait rouge dans le classeur historique, bascule en vert le 26 aout parce que
+le rouge se confondait avec le rose et le violet a la lecture rapide. **Le `S` est
+noir : un special est une rupture, pas une nuance de plus, donc il sort de la palette
+au lieu d'y etre range.** `S+` n'a aucune piste et donc aucune couleur mesuree.
 
 ## Contraintes iOS, connues et assumees
 
@@ -61,11 +89,24 @@ physiques : ne pas les changer.
   JS quand l'ecran se verrouille mais laisse passer les evenements media. Corollaire :
   juger un enchainement ne peut pas se faire ecran verrouille.
 
+## D'ou vient le son
+
+`AudioSource` (`src/audio/source.ts`) est une interface, injectee par contexte.
+L'app ne sait pas jouer de la musique, elle sait demander une URL a une source.
+
+- `MockAudioSource` : WAV synthetise a la volee, hauteur suivant la cle et clics
+  suivant le bpm joue. Permet de travailler la boucle de jugement sans un seul
+  fichier. **Source par defaut.**
+- `LocalFileSource` : fichiers importes dans IndexedDB. Autonome, hors ligne, 1 a 2 Go.
+- `BandcampLinkSource` : ouvre le morceau dans Bandcamp, sans le lire. Voir le
+  commentaire du fichier pour pourquoi la lecture n'est pas branchable.
+
 ## Etat des donnees au 6 septembre 2026
 
-249 morceaux, 24 albums, importes de `Crate_Barberbeats_82_92_97.xlsx` et de la
-`Feuille 2` de `Finale_Barberbeats_85_5.xlsx`. Restent a remplir a la main :
-114 faces, 179 familles, 4 cles et 4 BPM.
+249 morceaux, 24 albums. Cle, BPM, BPM joue et tag viennent de
+`Crate_Barberbeats_82_92_97.xlsx` ; **les familles viennent des couleurs de
+remplissage de sa colonne Tag**, 245 sur 249 recuperees. Restent a remplir a la
+main : 114 faces, 4 couleurs, 4 cles et 4 BPM.
 
 ## Facon de travailler
 

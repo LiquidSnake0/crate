@@ -128,29 +128,6 @@
   white-space: nowrap;
 }
 
-.card-badges { display: flex; align-items: center; gap: 0.35rem; flex: 0 0 auto; }
-
-.pill {
-  min-width: 1.9rem;
-  padding: 0.15rem 0.4rem;
-  border-radius: 5px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-align: center;
-  color: #111;
-}
-.pill-side { background: var(--panel-2); color: var(--muted); border: 1px solid var(--line); }
-
-.tag {
-  font-variant-numeric: tabular-nums;
-  font-size: 0.8rem;
-  font-weight: 600;
-  min-width: 3.4rem;
-  text-align: right;
-}
-.tag-conflict { color: var(--warn); }
-.tag-empty { color: var(--line); }
-
 .missing {
   display: block;
   width: 100%;
@@ -270,3 +247,46 @@
 .player-main { border-color: var(--accent) !important; color: var(--accent) !important; }
 
 .player-warn { font-size: 0.7rem; color: var(--warn); }
+
+/* ---- pastilles de couleur ---- */
+
+.colors { display: flex; gap: 0.3rem; margin-top: 0.6rem; flex-wrap: wrap; }
+
+.swatch {
+  min-width: 2.15rem;
+  height: 2rem;
+  padding: 0 0.4rem;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  opacity: 0.72;
+}
+.swatch-on { opacity: 1; border-color: var(--text); }
+.swatch-clear { background: transparent; color: var(--muted); border: 1px solid var(--line); font-weight: 500; }
+
+.action-on { color: var(--accent); border-color: var(--accent); }
+
+select.action { appearance: none; padding-right: 1.4rem; }
+
+/* Le tag porte la couleur du genre : c'est l'etiquette, telle qu'elle est collee. */
+.tag {
+  flex: 0 0 auto;
+  min-width: 3.9rem;
+  padding: 0.3rem 0.45rem;
+  border-radius: 5px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.tag-conflict { outline: 2px solid var(--warn); outline-offset: 1px; }
+
+.player-tag {
+  flex: 0 0 auto;
+  padding: 0.3rem 0.45rem;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

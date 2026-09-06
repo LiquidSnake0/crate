@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { deriveTag, shiftCamelot, suggestAnchor, parseKey } from './camelot';
+import { deriveTag, shiftCamelot, suggestAnchor, parseKey, sliceOf } from './camelot';
 import seed from '../data/seed.json';
 
 describe('parseKey', () => {
@@ -73,5 +73,52 @@ describe('deriveTag contre le Sheet', () => {
       return d?.text !== r.legacyTag;
     });
     expect(wrong.map((r) => `${r.title}: ${r.legacyTag}`)).toEqual([]);
+  });
+});
+
+describe('tranches et fader', () => {
+  it('la fleche designe la tranche, pas la direction du fader', () => {
+    // 76.87 monte vers 82 : pitch positif, mais tranche basse donc fleche vers le bas.
+    const t = deriveTag('8B', 76.87, 82);
+    expect(t?.prefix).toBe('↓');
+    expect(t!.pitch).toBeGreaterThan(0);
+  });
+
+  it('marque le passage en fader etendu au-dela de 8 %', () => {
+    expect(deriveTag('2A', 73.92, 82)?.extendedFader).toBe(true);
+    expect(deriveTag('8B', 76.87, 82)?.extendedFader).toBe(false);
+  });
+
+  it('sort du fader au-dela de 16 %', () => {
+    expect(sliceOf(71.27)).toBe('↓'); // +15,1 %, dernier jouable
+    expect(sliceOf(70.08)).toBe('⚠'); // +17,0 %, hors fader
+  });
+
+  it('range les speciaux a part', () => {
+    expect(sliceOf(134)).toBe('★');
+  });
+});
+
+// La regle des tranches doit reproduire la colonne "BPM joue" du classeur.
+describe('suggestAnchor contre le classeur', () => {
+  const rows = (seed as Array<{ bpm: number | null; anchorBpm: number | null; title: string }>)
+    .filter((r) => r.bpm && r.anchorBpm);
+
+  it('couvre la quasi-totalite du crate', () => {
+    expect(rows.length).toBeGreaterThan(240);
+  });
+
+  it('retrouve le bpm joue de chaque morceau', () => {
+    const wrong = rows.filter(
+      (r) => Math.abs(suggestAnchor(r.bpm!) - r.anchorBpm!) > 0.01,
+    );
+    expect(wrong.map((r) => `${r.title}: ${r.bpm} -> ${r.anchorBpm}`)).toEqual([]);
+  });
+});
+
+describe('familles reprises des couleurs du classeur', () => {
+  const rows = seed as Array<{ family: string | null }>;
+  it('ne laisse que les morceaux sans donnees sans couleur', () => {
+    expect(rows.filter((r) => !r.family).length).toBe(4);
   });
 });

@@ -1,25 +1,28 @@
-// Derivation du tag Camelot pitche.
+// Derivation du tag.
 //
-// Le tag n'est PAS une donnee : c'est une vue sur (cle, bpm, bpm joue).
-// Le stocker, c'est se condamner a le maintenir a la main et a le desynchroniser
-// des qu'un bpm est corrige. Cette formule reproduit les 249 tags du Sheet.
+// Le tag n'est PAS une donnee : c'est une vue sur (cle, bpm, bpm joue). Le stocker,
+// c'est le desynchroniser des la premiere correction de bpm.
 //
-// Grammaire des prefixes, relevee dans le Sheet :
-//   ↓  palier bas  (82)      ↑  palier haut (97)      •  palier median (85-91) ou natif
-//   !  pitch > 8 %           ⚠  aucun palier atteignable, joue natif
-//   ★  jungle (crate separe)
+// Systeme a trois tranches, arrete le 26 aout 2026. La fleche designe LA TRANCHE,
+// pas la direction du fader : la direction se regle a l'oreille au beatmatch, alors
+// que la tranche est un etat porte toute la soiree, qu'il faut pouvoir relire d'un
+// coup d'oeil sur l'etiquette.
 
 export type Prefix = '↓' | '•' | '↑' | '⚠' | '★';
 
-export const ANCHORS = [82, 87, 97] as const;
-/** Au-dela, on est dans la jungle : crate separe, pas de pitch. */
-export const JUNGLE_BPM = 120;
-/** Zone ou le bpm natif se joue tel quel, sans chercher un palier. */
-export const NATIVE_BAND: readonly [number, number] = [84, 92];
-/** Pitch au-dela duquel le tag porte un `!`. */
-export const STRONG_PITCH = 0.08;
-/** Pitch au-dela duquel un palier est considere inatteignable. */
-export const MAX_PITCH = 0.15;
+/** Bornes de bpm natif de chaque tranche. */
+export const SLICES = {
+  low: { max: 82, play: 82 },
+  mid: { max: 92, floor: 85 },
+  high: { max: 110, play: 97 },
+} as const;
+
+/** Au-dela, morceau special : joue natif, crate separe. */
+export const SPECIAL_BPM = 122;
+
+/** Fader d'une PLX MK7 : +-8 % par defaut, +-16 % en mode etendu. */
+export const FADER_DEFAULT = 0.08;
+export const FADER_MAX = 0.16;
 
 const KEY_RE = /^(\d{1,2})([AB])$/;
 
@@ -32,8 +35,8 @@ export function parseKey(key: string): { n: number; letter: 'A' | 'B' } | null {
 }
 
 /**
- * Un demi-ton vers le haut avance d'une quinte sur la roue Camelot,
- * soit +7 positions modulo 12. La lettre ne bouge pas.
+ * Un demi-ton vers le haut avance d'une quinte sur la roue Camelot, soit
+ * +7 positions modulo 12. La lettre ne bouge jamais.
  */
 export function shiftCamelot(key: string, semitones: number): string | null {
   const k = parseKey(key);
@@ -46,30 +49,48 @@ export function semitonesBetween(fromBpm: number, toBpm: number): number {
   return Math.round(12 * Math.log2(toBpm / fromBpm));
 }
 
+function reachable(bpm: number, target: number): boolean {
+  return Math.abs(target / bpm - 1) <= FADER_MAX;
+}
+
 /**
- * Palier suggere pour un bpm donne. C'est une proposition pour les lignes
- * vides, jamais une correction : si `anchorBpm` est renseigne, il gagne.
+ * BPM auquel le morceau se joue, deduit de sa tranche. Proposition pour un champ
+ * vide : une valeur saisie par Selim gagne toujours.
+ *
+ * Verifie sur les 245 morceaux tagues du classeur : 245 d'accord, 0 divergent.
  */
 export function suggestAnchor(bpm: number): number {
-  if (bpm >= JUNGLE_BPM) return bpm;
-  if (bpm >= NATIVE_BAND[0] && bpm <= NATIVE_BAND[1]) return bpm;
-  const reachable = ANCHORS.filter((a) => Math.abs(a / bpm - 1) <= MAX_PITCH);
-  if (reachable.length === 0) return bpm;
-  return reachable.reduce((best, a) =>
-    Math.abs(a / bpm - 1) < Math.abs(best / bpm - 1) ? a : best,
-  );
+  if (bpm >= SPECIAL_BPM) return bpm;
+  if (bpm <= SLICES.low.max) {
+    return reachable(bpm, SLICES.low.play) ? SLICES.low.play : bpm;
+  }
+  if (bpm <= SLICES.mid.max) return Math.max(bpm, SLICES.mid.floor);
+  if (bpm <= SLICES.high.max) {
+    return reachable(bpm, SLICES.high.play) ? SLICES.high.play : bpm;
+  }
+  return bpm;
+}
+
+/** La tranche se lit sur le bpm natif, pas sur le bpm joue. */
+export function sliceOf(bpm: number): Prefix {
+  if (bpm >= SPECIAL_BPM) return '★';
+  if (bpm <= SLICES.low.max) return reachable(bpm, SLICES.low.play) ? '↓' : '⚠';
+  if (bpm <= SLICES.mid.max) return '•';
+  if (bpm <= SLICES.high.max) return reachable(bpm, SLICES.high.play) ? '↑' : '⚠';
+  return '⚠';
 }
 
 export interface Tag {
   /** Le tag complet, ex "↓3B" ou "↑9A!". */
   text: string;
   prefix: Prefix;
-  /** Camelot apres pitch, ex "3B". */
+  /** Camelot apres transposition, ex "3B". */
   camelot: string;
   semitones: number;
   /** Ecart de pitch, -0.056 pour -5,6 %. */
   pitch: number;
-  strong: boolean;
+  /** Depasse les +-8 % du fader : passer la platine en +-16 avant de lancer. */
+  extendedFader: boolean;
 }
 
 export function deriveTag(
@@ -84,36 +105,20 @@ export function deriveTag(
   if (!camelot) return null;
 
   const pitch = anchor / bpm - 1;
-  const strong = Math.abs(pitch) > STRONG_PITCH;
-
-  let prefix: Prefix;
-  if (anchor >= JUNGLE_BPM) prefix = '★';
-  else if (anchor === 82) prefix = '↓';
-  else if (anchor === 97) prefix = '↑';
-  else if (Math.abs(anchor - bpm) < 0.01 && !isReachable(bpm)) prefix = '⚠';
-  else prefix = '•';
+  const extendedFader = Math.abs(pitch) > FADER_DEFAULT;
 
   return {
-    text: `${prefix}${camelot}${strong ? '!' : ''}`,
-    prefix,
+    text: `${sliceOf(bpm)}${camelot}${extendedFader ? '!' : ''}`,
+    prefix: sliceOf(bpm),
     camelot,
     semitones,
     pitch,
-    strong,
+    extendedFader,
   };
 }
 
-function isReachable(bpm: number): boolean {
-  if (bpm >= NATIVE_BAND[0] && bpm <= NATIVE_BAND[1]) return true;
-  return ANCHORS.some((a) => Math.abs(a / bpm - 1) <= MAX_PITCH);
-}
-
-/** Le tag calcule contredit-il celui saisi dans le Sheet ? */
+/** Le tag calcule contredit-il celui saisi dans le classeur ? */
 export function tagConflict(legacy: string | null, derived: Tag | null): boolean {
   if (!legacy || !derived) return false;
-  return normalise(legacy) !== normalise(derived.text);
-}
-
-function normalise(tag: string): string {
-  return tag.replace(/^[↑↓•⚠★]/, '').replace(/!$/, '').trim().toUpperCase();
+  return legacy.trim().toUpperCase() !== derived.text.toUpperCase();
 }

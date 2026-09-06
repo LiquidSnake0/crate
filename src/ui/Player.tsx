@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Track } from '../model/types';
-import { audioUrl } from '../db/audio';
+import { FAMILY_COLOR, FAMILY_INK } from '../model/types';
 import { deriveTag } from '../model/camelot';
+import { useAudioSource } from '../audio/context';
 
 interface Props {
   track: Track | null;
@@ -15,30 +16,31 @@ interface Props {
  * les evenements media. C'est la seule facon de tenir en poche.
  */
 export function Player({ track, onNext, onPrev }: Props) {
+  const { source } = useAudioSource();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [url, setUrl] = useState<string | null>(null);
   const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
-    let revoked: string | null = null;
+    let mine: string | null = null;
     let cancelled = false;
-    if (!track?.audioId) {
+    if (!track) {
       setUrl(null);
       return;
     }
-    void audioUrl(track.audioId).then((u) => {
+    void source.resolve(track).then((u) => {
       if (cancelled) {
-        if (u) URL.revokeObjectURL(u);
+        if (u) source.release(u);
         return;
       }
-      revoked = u;
+      mine = u;
       setUrl(u);
     });
     return () => {
       cancelled = true;
-      if (revoked) URL.revokeObjectURL(revoked);
+      if (mine) source.release(mine);
     };
-  }, [track?.audioId]);
+  }, [track, source]);
 
   useEffect(() => {
     if (!track || !('mediaSession' in navigator)) return;
@@ -58,19 +60,32 @@ export function Player({ track, onNext, onPrev }: Props) {
 
   if (!track) return null;
   const tag = deriveTag(track.key, track.bpm, track.anchorBpm);
+  const fam = track.family;
 
   return (
     <div className="player">
+      {tag && (
+        <span
+          className="player-tag"
+          style={
+            fam
+              ? { background: FAMILY_COLOR[fam], color: FAMILY_INK[fam] }
+              : { border: '1px dashed var(--line)', color: 'var(--muted)' }
+          }
+        >
+          {tag.text}
+        </span>
+      )}
       <div className="player-id">
         <span className="player-title">{track.title}</span>
         <span className="player-sub">
           {track.artist}
           {track.side ? ` · face ${track.side}` : ''}
-          {tag ? ` · ${tag.text}` : ''}
+          {track.anchorBpm ? ` · ${track.anchorBpm} BPM` : ''}
         </span>
       </div>
       <div className="player-controls">
-        <button onClick={onPrev} aria-label="Precedent">◀</button>
+        <button onClick={onPrev} aria-label="Precedent">◀◀</button>
         <button
           className="player-main"
           onClick={() => {
@@ -83,7 +98,7 @@ export function Player({ track, onNext, onPrev }: Props) {
         >
           {playing ? '❚❚' : '▶'}
         </button>
-        <button onClick={onNext} aria-label="Suivant">▶</button>
+        <button onClick={onNext} aria-label="Suivant">▶▶</button>
       </div>
       <audio
         ref={audioRef}
@@ -93,7 +108,6 @@ export function Player({ track, onNext, onPrev }: Props) {
         onPause={() => setPlaying(false)}
         onEnded={onNext}
       />
-      {!url && <span className="player-warn">fichier absent</span>}
     </div>
   );
 }
