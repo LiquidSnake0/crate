@@ -159,9 +159,19 @@ export function TrackCard({ track, code, playing, onPlay }: Props) {
                 {tag.extendedFader && ' · passer en ±16'}
               </span>
             )}
-            {source instanceof BandcampLinkSource ? (
-              <a className="play" href={source.searchUrl(track)} target="_blank" rel="noreferrer">
-                Ouvrir dans Bandcamp
+            {track.bcUrl || source instanceof BandcampLinkSource ? (
+              <a
+                className="play"
+                href={
+                  track.bcUrl ??
+                  (source instanceof BandcampLinkSource
+                    ? source.searchUrl(track)
+                    : `https://bandcamp.com/search?q=${encodeURIComponent(`${track.artist} ${track.title}`)}`)
+                }
+                target="_blank"
+                rel="noreferrer"
+              >
+                Bandcamp ↗
               </a>
             ) : (
               <button

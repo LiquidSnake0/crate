@@ -32,8 +32,9 @@ export class BandcampLinkSource implements AudioSource {
 
   release(): void {}
 
-  /** Page de recherche Bandcamp pour ce morceau. */
+  /** Page du morceau, ou a defaut une recherche. */
   searchUrl(track: Track): string {
+    if (track.bcUrl) return track.bcUrl;
     const q = encodeURIComponent(`${track.artist} ${track.title}`);
     return `https://bandcamp.com/search?q=${q}`;
   }

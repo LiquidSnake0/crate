@@ -10,7 +10,7 @@ const make = (p: Partial<Track>): Track => ({
   artist: p.artist ?? 'A', album: p.album ?? 'Alb', title: p.title ?? 'T',
   trackNumber: null, key: p.key ?? '8A', bpm: p.bpm ?? 82,
   anchorBpm: p.anchorBpm ?? null, side: null, family: p.family ?? 'M',
-  durationSec: p.durationSec ?? null, legacyTag: null, notes: '', audioId: null, ...p,
+  durationSec: p.durationSec ?? null, artId: null, bcUrl: null, legacyTag: null, notes: '', audioId: null, ...p,
 });
 
 describe('tempoFactor', () => {

@@ -132,8 +132,13 @@ au lieu d'y etre range.** `S+` n'a aucune piste et donc aucune couleur mesuree.
 ## D'ou vient le son
 
 **Selim ecoute dans Bandcamp et revient saisir dans l'app.** C'est son choix, et
-il evite de stocker 1 a 2 Go sur le telephone. Chaque ligne du mode live porte donc
-un lien direct vers la recherche Bandcamp du morceau.
+il evite de stocker 1 a 2 Go sur le telephone. Chaque morceau porte son `bcUrl`, la
+page Bandcamp du titre, que l'app iOS capte et ouvre directement sur le son.
+
+**Il n'existe pas de lien profond vers une piste d'une playlist** : le lecteur de
+playlist de Bandcamp ne lit aucun parametre d'URL, verifie dans son bundle. La page du
+morceau est ce qui s'en approche le plus. La recherche ne sert plus que pour un morceau
+saisi a la main, sans lien connu.
 
 Consequence, et c'est la contrainte qui rend ce choix viable : **l'etat du set est
 persiste** dans la table `state`, onglet actif compris. iOS peut decharger une
@@ -162,12 +167,24 @@ une interface injectee par contexte :
 remplissage de sa colonne Tag**, 245 sur 249 recuperees. Restent a remplir a la
 main : 114 faces, 4 couleurs, 4 cles et 4 BPM.
 
-## Les pochettes
+## Les pochettes sont pointees, pas copiees
 
-**Elles sont deja posees, les 24.** Recuperees le 6 septembre 2026 depuis les pages
-d'album Bandcamp. Les originaux pleine resolution sont dans `~/Documents/crate-pochettes`,
-hors du depot : ce sont des oeuvres sous droits, elles n'ont rien a faire dans un
-depot public.
+**Chaque morceau porte l'`artId` de son album**, et `coverUrl()` en fabrique l'adresse
+chez Bandcamp : `f4.bcbits.com/img/a<artId>_9.jpg` en 210 px pour les vignettes,
+`_16` en 700 px au-dela. Tailles publiees : `_3` 100, `_7` 150, `_9` 210, `_5` et
+`_16` 700, `_10` 1200, `_0` l'original.
+
+Trois raisons de pointer plutot que de copier :
+- **chaque origine a sa propre base IndexedDB.** `localhost`, le site deploye et
+  l'iPhone ne partagent rien : une pochette importee sur un poste etait invisible
+  ailleurs. Une URL, elle, vaut partout et sans rien transporter ;
+- elle ne pese rien, ni dans le depot ni dans IndexedDB ;
+- **une pochette d'album est une oeuvre sous droits** et n'a rien a faire dans un
+  depot public.
+
+Une image posee a la main ou lue dans un MP3 reste prioritaire sur l'adresse distante,
+et l'app retombe sur le disque muet si l'image ne charge pas. Les originaux pleine
+resolution sont dans `~/Documents/crate-pochettes`, hors du depot.
 
 Deux pieges rencontres ce jour-la, a ne pas refaire :
 - **La collection Bandcamp de Selim est vide** (`collection_count: 0`). Ses disques ne

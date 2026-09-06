@@ -11,9 +11,18 @@ import {
 } from '../model/scoring';
 import { Cover } from './Cover';
 
-/** Recherche Bandcamp du morceau : c'est la que Selim l'ecoute. */
+/**
+ * Page Bandcamp du morceau. Sur iPhone, l'app Bandcamp capte ce lien et ouvre
+ * directement le son.
+ *
+ * Ce n'est pas la playlist positionnee sur la piste : le lecteur de playlist ne
+ * lit aucun parametre d'URL, il n'y a donc pas de lien profond vers une piste
+ * dedans. La page du morceau est ce qui s'en approche le plus.
+ *
+ * La recherche ne sert que pour un morceau saisi a la main, sans lien connu.
+ */
 function bandcampUrl(t: Track): string {
-  return `https://bandcamp.com/search?q=${encodeURIComponent(`${t.artist} ${t.title}`)}`;
+  return t.bcUrl ?? `https://bandcamp.com/search?q=${encodeURIComponent(`${t.artist} ${t.title}`)}`;
 }
 
 /**

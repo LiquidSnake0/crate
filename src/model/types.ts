@@ -73,6 +73,10 @@ export interface Track {
   /** Duree en secondes, relevee sur la playlist Bandcamp. Null pour les pistes
    *  du vinyle qui n'ont pas de contrepartie numerique. */
   durationSec: number | null;
+  /** Identifiant de la pochette chez Bandcamp. On pointe l'image, on ne la copie pas. */
+  artId: string | null;
+  /** Page du morceau chez Bandcamp. C'est elle que l'app iOS ouvre. */
+  bcUrl: string | null;
 
   /** Tag tel qu'il etait dans le classeur, temoin. Jamais reecrit. */
   legacyTag: string | null;
@@ -133,6 +137,21 @@ export function missingFields(t: Track): string[] {
   if (!t.side) out.push('face');
   if (!t.family) out.push('famille');
   return out;
+}
+
+/**
+ * URL de la pochette chez Bandcamp.
+ *
+ * On pointe l'image la ou elle est publiee au lieu d'en garder une copie. Trois
+ * raisons : elle s'affiche sur n'importe quel appareil sans transporter de fichier,
+ * elle ne pese rien dans le depot ni dans IndexedDB, et une pochette d'album est une
+ * oeuvre sous droits qui n'a rien a faire dans un depot public.
+ *
+ * Tailles publiees : _3 100px, _7 150px, _9 210px, _5 et _16 700px, _10 1200px.
+ */
+export function coverUrl(t: Pick<Track, 'artId'>, size: 'vignette' | 'grande' = 'vignette'): string | null {
+  if (!t.artId) return null;
+  return `https://f4.bcbits.com/img/a${t.artId}_${size === 'grande' ? 16 : 9}.jpg`;
 }
 
 /** Le disque, pas la face : la contrainte "jamais deux faces du meme disque" s'y arrete. */

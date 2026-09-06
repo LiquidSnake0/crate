@@ -6,7 +6,7 @@ const t = (p: Partial<Track>): Track => ({
   id: p.id ?? Math.random().toString(36).slice(2),
   artist: p.artist ?? 'A', album: p.album ?? 'Alb', title: p.title ?? 'T',
   trackNumber: p.trackNumber ?? null, key: null, bpm: null, anchorBpm: null,
-  side: p.side ?? null, family: null, durationSec: null, legacyTag: null, notes: '', audioId: null,
+  side: p.side ?? null, family: null, durationSec: null, artId: null, bcUrl: null, legacyTag: null, notes: '', audioId: null,
   ...p,
 });
 
