@@ -1,32 +1,43 @@
-# React + TypeScript + Vite
+# Crate
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Outil personnel pour un crate vinyle de barber beats et vaporwave. PWA, sans backend,
+tout tourne dans le navigateur.
 
-Currently, two official plugins are available:
+**En ligne : https://liquidsnake0.github.io/crate/**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Ce que ça fait
 
-## React Compiler
+- **Corriger le crate morceau par morceau** : face, couleur de genre, clé Camelot, BPM.
+  Chaque champ est écrit dans IndexedDB dès la sortie du champ, sans bouton Enregistrer.
+- **Signaler les erreurs de saisie.** Le tag Camelot pitché n'est pas stocké, il est
+  dérivé de (clé, BPM, BPM joué). Le tag historique est gardé comme témoin : quand les
+  deux divergent, un des trois champs est faux, et l'app le dit.
+- **Classer les enchaînements en live.** On tape le morceau en cours, l'app ordonne les
+  suites possibles selon le tempo, la couleur et la roue Camelot. Chaque enchaînement
+  joué ou refusé est enregistré, et un jugement rendu écrase toujours le calcul.
+- **Saisir les nouveaux achats**, avec le tag calculé pendant la frappe.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Le tempo est une rampe
 
-## Expanding the Oxlint configuration
+Sur un set d'une heure, chaque morceau gagne environ 1 BPM, ce qui mène de 82 à 97 en
+dix-sept morceaux. Les trois tranches du système de tags ne sont donc pas des catégories
+exclusives, ce sont trois stations sur une montée. Le classement des candidats vise le
+tempo suivant sur cette rampe, dont le pas est réglable.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Développement
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```
+npm install
+npm run dev      # http://localhost:5173/crate/
+npx vitest run
+npm run build
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+`base` vaut `/crate/` en dev comme en build, pour que le local se comporte comme
+GitHub Pages.
+
+Les tests verrouillent la dérivation des tags sur des données réelles : la formule
+doit reproduire les 245 tags du classeur d'origine à l'identique, préfixe et point
+d'exclamation compris, et retrouver les 245 BPM joués.
+
+Le détail du domaine est dans `CLAUDE.md`.
