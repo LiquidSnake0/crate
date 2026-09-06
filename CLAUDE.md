@@ -1,19 +1,22 @@
 # Crate
 
-Outil perso pour le crate vinyle de Selim (barber beats / vaporwave). Deux usages,
-dans cet ordre :
+Outil perso pour le crate vinyle de Selim (barber beats / vaporwave). Trois usages :
 
 1. **Corriger** le crate morceau par morceau : une face manquante, un BPM faux,
-   une famille absente, une cle erronee. C'est le travail principal, fait a la main.
-2. **Ecouter** sur iPhone pendant qu'on corrige.
+   une couleur absente, une cle erronee. Fait a la main, c'est le fond du travail.
+2. **Juger en live** : on tape le morceau en cours, l'app classe les suites
+   possibles, et chaque enchainement joue ou refuse est enregistre.
+3. **Saisir** les nouveaux achats, puisque le classeur ne sert plus.
 
-Le moteur de suggestion d'enchainements (graphe, scoring bayesien) viendra plus tard.
-Il n'a aucun sens tant que les donnees ne sont pas propres, et les coefficients ne
-seront calibrables qu'avec de vrais jugements.
+Deploye en PWA sur GitHub Pages, installee sur l'ecran d'accueil de l'iPhone.
 
 ## Stack
 
-Vite + React + TypeScript, Dexie (IndexedDB), zero backend. Vitest pour les tests.
+Vite + React + TypeScript, Dexie (IndexedDB), zero backend. Vitest pour les tests,
+vite-plugin-pwa pour le service worker et le manifeste.
+
+**`base` vaut `/crate/`, en dev comme en build**, pour que le local se comporte
+comme GitHub Pages. En developpement l'app est donc sur `http://localhost:5173/crate/`.
 
 ## Le tempo est une rampe, pas une tranche
 
@@ -51,8 +54,6 @@ ecrite : a valider.
   `src/model/camelot.ts` derive le tag ; `camelot.test.ts` verifie qu'il reproduit
   les 245 tags du Sheet a l'identique.
 - **Un demi-ton = +7 positions sur la roue Camelot**, la lettre ne bouge pas.
-- **La fleche du tag designe le palier, pas le sens du pitch.** Les `↓` du Sheet ont
-  un pitch positif : ce sont des morceaux lents remontes a 82.
 - **`anchorBpm` est une decision de DJ, pas un calcul.** `suggestAnchor` ne sert qu'a
   pre-remplir un champ vide. Une valeur saisie gagne toujours.
 - **`legacyTag` n'est jamais reecrit.** Il sert de temoin : quand le tag calcule en
