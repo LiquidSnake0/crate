@@ -20,6 +20,9 @@ interface Props {
  * sortie du champ : pas de bouton Enregistrer, rien a perdre si Safari tue
  * l'onglet au milieu d'une session de tri.
  */
+const fmt = (sec: number) =>
+  `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
+
 export function TrackCard({ track, code, playing, onPlay }: Props) {
   const [open, setOpen] = useState(false);
   const { source } = useAudioSource();
@@ -48,6 +51,7 @@ export function TrackCard({ track, code, playing, onPlay }: Props) {
           <span className="row-title">{track.title}</span>
           <span className="row-sub">
             {track.artist} · {track.album}
+            {track.durationSec ? ` · ${fmt(track.durationSec)}` : ''}
           </span>
         </div>
       </div>

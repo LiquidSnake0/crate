@@ -62,6 +62,52 @@ interface SeedRow {
   artist: string; album: string; title: string; trackNumber: number | null;
   key: string | null; bpm: number | null; anchorBpm: number | null;
   side: string | null; family: string | null; legacyTag: string | null;
+  durationSec?: number | null;
+}
+
+/**
+ * Titres corriges dans le seed apres verification sur la playlist Bandcamp.
+ *
+ * L'identifiant d'un morceau contient son titre : sans cette table, corriger un
+ * titre creerait un doublon au lieu de remplacer l'ancien, et les corrections
+ * faites a la main sur l'ancien seraient perdues.
+ */
+const RENAMED: { from: string; to: string }[] = [
+  {
+    from: 'macroblank|エコーチャンバーパーティー|2|甘い苦味w',
+    to: 'macroblank|エコーチャンバーパーティー|2|甘い苦味',
+  },
+  {
+    from: "slowerpace 音楽|encardia '99|7|cosmos- beginner's guide",
+    to: "slowerpace 音楽|encardia '99|7|cosmos: beginner's guide",
+  },
+];
+
+async function applyRenames(seedRows: SeedRow[]): Promise<void> {
+  for (const { from, to } of RENAMED) {
+    const old = await db.tracks.get(from);
+    if (!old) continue;
+    const current = await db.tracks.get(to);
+    // Le titre corrige vient du seed : reprendre celui de l'ancien reconduirait
+    // la faute de frappe sous un nouvel identifiant.
+    const fixed = seedRows.find((r) => trackId(r) === to);
+    await db.tracks.put({
+      ...old,
+      ...(current ?? {}),
+      id: to,
+      title: fixed?.title ?? current?.title ?? old.title,
+      trackNumber: fixed?.trackNumber ?? old.trackNumber,
+    });
+    await db.tracks.delete(from);
+    for (const j of await db.judgements.where('fromId').equals(from).toArray()) {
+      await db.judgements.delete(j.id);
+      await db.judgements.put({ ...j, id: `${to}>${j.toId}`, fromId: to });
+    }
+    for (const j of await db.judgements.where('toId').equals(from).toArray()) {
+      await db.judgements.delete(j.id);
+      await db.judgements.put({ ...j, id: `${j.fromId}>${to}`, toId: to });
+    }
+  }
 }
 
 /**
@@ -73,7 +119,10 @@ interface SeedRow {
  * toujours sur la donnee importee.
  */
 export async function seedIfEmpty(): Promise<{ added: number; filled: number }> {
-  const rows = (seed as SeedRow[]).map((r) => ({
+  const seedRows = seed as SeedRow[];
+  await applyRenames(seedRows);
+
+  const rows = seedRows.map((r) => ({
     id: trackId(r),
     artist: r.artist,
     album: r.album,
@@ -84,6 +133,7 @@ export async function seedIfEmpty(): Promise<{ added: number; filled: number }> 
     anchorBpm: r.anchorBpm,
     side: (r.side as Track['side']) ?? null,
     family: (r.family as Track['family']) ?? null,
+    durationSec: r.durationSec ?? null,
     legacyTag: r.legacyTag,
     notes: '',
     audioId: null,
@@ -108,6 +158,7 @@ export async function seedIfEmpty(): Promise<{ added: number; filled: number }> 
       anchorBpm: cur.anchorBpm ?? row.anchorBpm,
       side: cur.side ?? row.side,
       family: cur.family ?? row.family,
+      durationSec: cur.durationSec ?? row.durationSec,
       legacyTag: cur.legacyTag ?? row.legacyTag,
     };
     if (JSON.stringify(merged) !== JSON.stringify(cur)) {
@@ -213,7 +264,7 @@ export async function unjudge(fromId: string, toId: string): Promise<void> {
 /** Ajoute un morceau saisi a la main. Renvoie null si un morceau identique existe. */
 export async function addTrack(
   input: Pick<Track, 'artist' | 'album' | 'title' | 'trackNumber' | 'key' | 'bpm'> &
-    Partial<Pick<Track, 'anchorBpm' | 'side' | 'family' | 'notes'>>,
+    Partial<Pick<Track, 'anchorBpm' | 'side' | 'family' | 'notes' | 'durationSec'>>,
 ): Promise<Track | null> {
   const id = trackId(input);
   if (await db.tracks.get(id)) return null;
@@ -228,6 +279,7 @@ export async function addTrack(
     anchorBpm: input.anchorBpm ?? null,
     side: input.side ?? null,
     family: input.family ?? null,
+    durationSec: input.durationSec ?? null,
     legacyTag: null,
     notes: input.notes ?? '',
     audioId: null,

@@ -70,6 +70,9 @@ export interface Track {
 
   side: Side | null;
   family: Family | null;
+  /** Duree en secondes, relevee sur la playlist Bandcamp. Null pour les pistes
+   *  du vinyle qui n'ont pas de contrepartie numerique. */
+  durationSec: number | null;
 
   /** Tag tel qu'il etait dans le classeur, temoin. Jamais reecrit. */
   legacyTag: string | null;
@@ -111,6 +114,8 @@ export interface LiveState {
   ramp: number;
   /** L'ecran ouvert. Revenir de Bandcamp sur le mauvais onglet ferait perdre sa place. */
   tab?: 'crate' | 'live';
+  /** Duree visee du set, en minutes. C'est elle qui donne le pas de la rampe. */
+  setMinutes?: number;
 }
 
 export interface AudioBlob {

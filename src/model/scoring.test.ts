@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   colorFactor, camelotFactor, tempoFactor, rankNext, pairKey, DEFAULT_WEIGHTS,
+  rampPlan, averageDuration,
 } from './scoring';
 import type { Track } from './types';
 
@@ -9,7 +10,7 @@ const make = (p: Partial<Track>): Track => ({
   artist: p.artist ?? 'A', album: p.album ?? 'Alb', title: p.title ?? 'T',
   trackNumber: null, key: p.key ?? '8A', bpm: p.bpm ?? 82,
   anchorBpm: p.anchorBpm ?? null, side: null, family: p.family ?? 'M',
-  legacyTag: null, notes: '', audioId: null, ...p,
+  durationSec: p.durationSec ?? null, legacyTag: null, notes: '', audioId: null, ...p,
 });
 
 describe('tempoFactor', () => {
@@ -105,5 +106,47 @@ describe('rankNext', () => {
     const sansCle = make({ id: 'nk', album: 'D2', key: null, anchorBpm: 83 });
     const [c] = rankNext(current, [sansCle], { weights: DEFAULT_WEIGHTS });
     expect(c.score).toBeGreaterThan(0);
+  });
+});
+
+describe('rampPlan', () => {
+  const AVG = 285; // moyenne reelle du crate
+
+  it('retrouve la regle du +1 BPM sur un set d une heure', () => {
+    const p = rampPlan(82, 0, 60, AVG);
+    expect(p.remainingTracks).toBe(13);
+    expect(p.step).toBeCloseTo(1.15, 1);
+  });
+
+  it('etale la montee sur un set plus long', () => {
+    expect(rampPlan(82, 0, 180, AVG).step).toBeLessThan(rampPlan(82, 0, 60, AVG).step);
+  });
+
+  it('accelere quand le set avance sans que le tempo ait suivi', () => {
+    const debut = rampPlan(82, 0, 60, AVG);
+    const tard = rampPlan(82, 45 * 60, 60, AVG);
+    expect(tard.step).toBeGreaterThan(debut.step);
+  });
+
+  it('ne redescend jamais une fois en haut', () => {
+    expect(rampPlan(97, 0, 60, AVG).step).toBe(0);
+    expect(rampPlan(105, 0, 60, AVG).step).toBe(0);
+  });
+
+  it('tient sans planter quand le set est fini', () => {
+    const p = rampPlan(90, 99999, 60, AVG);
+    expect(p.remainingSec).toBe(0);
+    expect(p.remainingTracks).toBe(1);
+    expect(Number.isFinite(p.step)).toBe(true);
+  });
+});
+
+describe('averageDuration', () => {
+  it('ignore les morceaux sans duree', () => {
+    const rows = [make({ durationSec: 200 }), make({ durationSec: null }), make({ durationSec: 400 })];
+    expect(averageDuration(rows)).toBe(300);
+  });
+  it('se rabat sur la moyenne du crate quand rien n est connu', () => {
+    expect(averageDuration([make({ durationSec: null })])).toBe(285);
   });
 });

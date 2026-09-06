@@ -5,7 +5,10 @@ import type { Track } from '../model/types';
 import { FAMILY_COLOR, FAMILY_INK } from '../model/types';
 import { deriveTag } from '../model/camelot';
 import { buildPlacements } from '../model/placement';
-import { rankNext, playedBpm, DEFAULT_WEIGHTS, type Weights } from '../model/scoring';
+import {
+  rankNext, playedBpm, averageDuration, rampPlan,
+  DEFAULT_WEIGHTS, type Weights,
+} from '../model/scoring';
 import { Cover } from './Cover';
 
 /** Recherche Bandcamp du morceau : c'est la que Selim l'ecoute. */
@@ -34,6 +37,7 @@ export function Live() {
   const [chain, setChain] = useState<string[]>([]);
   const [showRefused, setShowRefused] = useState(false);
   const [restored, setRestored] = useState(false);
+  const [setMinutes, setSetMinutes] = useState(60);
 
   // On reprend le set la ou il en etait, une seule fois : Selim ecoute dans
   // Bandcamp et revient, et iOS a pu decharger la webapp entre-temps.
@@ -44,14 +48,15 @@ export function Live() {
       setCurrentId(row.currentId);
       setChain(row.chain);
       setWeights((w) => ({ ...w, ramp: row.ramp }));
+      if (row.setMinutes) setSetMinutes(row.setMinutes);
     }
     setRestored(true);
   }, [saved, restored]);
 
   useEffect(() => {
     if (!restored) return;
-    void saveLiveState({ currentId, chain, ramp: weights.ramp });
-  }, [restored, currentId, chain, weights.ramp]);
+    void saveLiveState({ currentId, chain, ramp: weights.ramp, setMinutes });
+  }, [restored, currentId, chain, weights.ramp, setMinutes]);
 
   const verdicts = useMemo(
     () => new Map((rows ?? []).map((j) => [j.id, j.verdict])),
@@ -62,10 +67,27 @@ export function Live() {
 
   const current = tracks?.find((t) => t.id === currentId) ?? null;
 
+  const avg = useMemo(() => averageDuration(tracks ?? []), [tracks]);
+
+  // Temps deja joue : la somme des durees de la chaine, pas une horloge. Selim
+  // peut poser le telephone entre deux disques sans fausser le plan.
+  const playedSec = useMemo(() => {
+    if (!tracks) return 0;
+    const byId = new Map(tracks.map((t) => [t.id, t]));
+    return chain.reduce((s, id) => s + (byId.get(id)?.durationSec ?? avg), 0);
+  }, [chain, tracks, avg]);
+
+  const plan = useMemo(
+    () => rampPlan(playedBpm(current ?? ({} as Track)) ?? 82, playedSec, setMinutes, avg),
+    [current, playedSec, setMinutes, avg],
+  );
+
+  const effective = useMemo<Weights>(() => ({ ...weights, ramp: plan.step }), [weights, plan.step]);
+
   const ranked = useMemo(() => {
     if (!current || !tracks) return [];
-    return rankNext(current, tracks, { weights, verdicts });
-  }, [current, tracks, weights, verdicts]);
+    return rankNext(current, tracks, { weights: effective, verdicts });
+  }, [current, tracks, effective, verdicts]);
 
   const refused = useMemo(() => ranked.filter((c) => c.verdict === 'non'), [ranked]);
   // Annuler le dernier refus ramene a la liste, sinon on reste sur du vide.
@@ -124,7 +146,9 @@ export function Live() {
   }
 
   const from = playedBpm(current);
-  const target = (from ?? 82) + weights.ramp;
+  const target = (from ?? 82) + plan.step;
+  const mmss = (sec: number) =>
+    `${Math.floor(sec / 60)}\u2009min`;
   const currentTag = deriveTag(current.key, current.bpm, current.anchorBpm);
 
   const advance = (t: Track) => {
@@ -169,7 +193,10 @@ export function Live() {
       <div className="ramp">
         <span className="ramp-line">
           {from ?? '?'} <span className="ramp-arrow">→</span> <b>{target.toFixed(1)}</b> BPM
-          <span className="ramp-count"> · {chain.length} joue{chain.length > 1 ? 's' : ''}</span>
+          <span className="ramp-count">
+            {' · '}+{plan.step.toFixed(1)} par morceau · {mmss(playedSec)} sur {setMinutes}
+            {' · reste ~'}{plan.remainingTracks}
+          </span>
         </span>
         {refused.length > 0 && (
           <button
@@ -179,16 +206,16 @@ export function Live() {
             {refused.length} refuse{refused.length > 1 ? 's' : ''}
           </button>
         )}
-        <label className="ramp-field">
+        <label className="ramp-field" title="Duree du set">
           <input
             type="range"
-            min="0"
-            max="2"
-            step="0.1"
-            value={weights.ramp}
-            onChange={(e) => setWeights({ ...weights, ramp: Number(e.target.value) })}
+            min="30"
+            max="240"
+            step="15"
+            value={setMinutes}
+            onChange={(e) => setSetMinutes(Number(e.target.value))}
           />
-          <b>+{weights.ramp.toFixed(1)}</b>
+          <b>{setMinutes >= 60 ? `${(setMinutes / 60).toFixed(setMinutes % 60 ? 1 : 0)} h` : `${setMinutes} min`}</b>
         </label>
       </div>
 

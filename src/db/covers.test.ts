@@ -5,7 +5,7 @@ import type { Track } from '../model/types';
 const t = (artist: string, album: string): Track => ({
   id: `${artist}|${album}|${Math.random()}`,
   artist, album, title: 'x', trackNumber: 1,
-  key: null, bpm: null, anchorBpm: null, side: null, family: null,
+  key: null, bpm: null, anchorBpm: null, side: null, family: null, durationSec: null,
   legacyTag: null, notes: '', audioId: null,
 });
 

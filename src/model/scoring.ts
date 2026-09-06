@@ -99,6 +99,43 @@ export function tempoFactor(candidateBpm: number, targetBpm: number): number {
   return Math.exp(-gap * gap);
 }
 
+/** Duree moyenne d'un morceau du crate, pour estimer combien il en reste a jouer. */
+export function averageDuration(tracks: Track[]): number {
+  const known = tracks.map((t) => t.durationSec).filter((d): d is number => !!d);
+  if (known.length === 0) return 285;
+  return known.reduce((a, b) => a + b, 0) / known.length;
+}
+
+export interface RampPlan {
+  /** BPM gagnes par morceau pour arriver en haut a la fin du set. */
+  step: number;
+  playedSec: number;
+  remainingSec: number;
+  remainingTracks: number;
+}
+
+/**
+ * Le pas de la rampe deduit de la duree du set plutot que regle a la main.
+ *
+ * Sur les durees reelles du crate, 285 s en moyenne, une heure fait 12,6 morceaux
+ * et mener 82 a 97 y demande 1,19 BPM par morceau. C'est exactement la regle du
+ * "+1 BPM" que Selim appliquait a l'oreille : le calcul la retrouve.
+ *
+ * Le pas est recalcule a chaque morceau : prendre du retard le fait monter.
+ */
+export function rampPlan(
+  currentBpm: number,
+  playedSec: number,
+  setMinutes: number,
+  avgDuration: number,
+  topBpm = 97,
+): RampPlan {
+  const remainingSec = Math.max(0, setMinutes * 60 - playedSec);
+  const remainingTracks = Math.max(1, Math.round(remainingSec / avgDuration));
+  const step = Math.max(0, (topBpm - currentBpm) / remainingTracks);
+  return { step, playedSec, remainingSec, remainingTracks };
+}
+
 export function playedBpm(t: Track): number | null {
   if (t.anchorBpm) return t.anchorBpm;
   return t.bpm ? suggestAnchor(t.bpm) : null;

@@ -194,6 +194,39 @@ Les images sont reduites a 600 px avant stockage. Une pochette Bandcamp pese env
 
 Un import MP3 lit aussi la pochette dans la frame APIC, une seule fois par disque.
 
+## La playlist Bandcamp "Physical"
+
+**https://bandcamp.com/liquidsnake_/playlist/physical** (compte `liquidsnake_`, pas
+`swave`, dont la collection est vide). 245 pistes, 24 albums, 19 h 18. C'est la
+contrepartie numerique du crate physique et la source des durees et des pochettes.
+
+245 + 4 = 249 : **les quatre pistes `?1` / `?2` du classeur n'ont pas de contrepartie
+Bandcamp.** Elles sont sur le vinyle sans exister dans la playlist, d'ou l'absence de
+cle, de bpm et de duree. Ce n'est pas un oubli de saisie.
+
+Le rapprochement a mis au jour **deux fautes de frappe dans le classeur**, corrigees :
+`甘い苦味w` sans le `w`, et `COSMOS- BEGINNER'S GUIDE` avec deux-points.
+L'identifiant d'un morceau contenant son titre, corriger un titre creerait un doublon :
+la table `RENAMED` de `db.ts` migre l'ancien identifiant vers le nouveau en gardant le
+travail fait a la main, et reprend le titre du seed et non celui de l'ancien.
+
+La page charge par lots de 50 au defilement, et seul un defilement reel declenche la
+suite : regler `scrollTop` en JavaScript ne charge rien.
+
+## La rampe se calcule, elle ne se regle plus
+
+Le curseur du mode live donne **la duree du set**, pas le pas. `rampPlan` en deduit
+combien de BPM gagner par morceau, a partir des durees reelles et du chemin restant
+jusqu'a 97.
+
+Mesure sur le crate : 285 s de moyenne, donc 12,6 morceaux dans une heure, donc
+**1,19 BPM par morceau pour mener 82 a 97**. La regle du "+1 BPM" que Selim appliquait
+a l'oreille tombe juste. Le pas est recalcule a chaque morceau : prendre du retard le
+fait monter.
+
+Le temps ecoule est la somme des durees jouees, pas une horloge : poser le telephone
+entre deux disques ne doit pas fausser le plan.
+
 ## Le classeur est de l'histoire
 
 Les deux `.xlsx` sont des valeurs saisies avant l'existence de l'app. Ils ont servi
