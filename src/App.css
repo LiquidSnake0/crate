@@ -290,3 +290,160 @@ select.action { appearance: none; padding-right: 1.4rem; }
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
+
+/* ---- onglets ---- */
+
+.tabs {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  display: flex;
+  gap: 0.3rem;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0.55rem 0.9rem 0;
+  background: var(--bg);
+}
+
+.tab {
+  flex: 1;
+  padding: 0.55rem 0.8rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px 8px 0 0;
+  border-bottom: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.tab-on { color: var(--accent); border-color: var(--accent); }
+
+.head { top: 3.1rem; }
+
+/* ---- saisie d'un morceau ---- */
+
+.add {
+  max-width: 720px;
+  margin: 0.6rem auto 0;
+  padding: 0.85rem 0.9rem;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.field-grow { flex: 3; }
+.field-narrow { flex: 1; }
+
+/* ---- mode live ---- */
+
+.live { max-width: 720px; margin: 0 auto; padding: 0.6rem 0.9rem 3rem; }
+
+.live-hint { color: var(--muted); font-size: 0.82rem; margin: 0.4rem 0 0.6rem; }
+
+.pick {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  text-align: left;
+}
+.pick-id { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.12rem; }
+.pick-id b { font-size: 0.86rem; }
+.pick-id span { font-size: 0.71rem; color: var(--muted); }
+.pick-bpm { font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.now {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.75rem 0.8rem;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+}
+.now-id { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.14rem; }
+.now-id b { font-size: 0.92rem; }
+.now-id span { font-size: 0.72rem; color: var(--muted); }
+.now-change {
+  padding: 0.35rem 0.6rem;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.ramp {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin: 0.6rem 0 0.2rem;
+  padding: 0.5rem 0.2rem;
+}
+.ramp-line { font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ramp-line b { color: var(--accent); font-size: 0.95rem; }
+.ramp-arrow { color: #6f767d; margin: 0 0.2rem; }
+.ramp-count { color: #6f767d; }
+.ramp-field { display: flex; align-items: center; gap: 0.45rem; font-size: 0.7rem; color: var(--muted); }
+.ramp-field input { width: 7rem; accent-color: var(--accent); }
+.ramp-field b { color: var(--text); font-variant-numeric: tabular-nums; min-width: 1.6rem; }
+
+.cand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+.cand-oui { border-color: var(--accent); }
+.cand-non { opacity: 0.4; }
+
+.cand-id { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; cursor: pointer; }
+.cand-id b { font-size: 0.84rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cand-id span { font-size: 0.7rem; color: var(--muted); }
+.cand-id em { color: var(--accent); font-style: normal; }
+.cand-why { font-size: 0.66rem !important; color: #6f767d !important; font-variant-numeric: tabular-nums; }
+
+.cand-score {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  min-width: 2rem;
+  text-align: right;
+}
+
+.cand-vote { display: flex; gap: 0.25rem; }
+.vote {
+  width: 2rem;
+  height: 2rem;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.vote-on { border-color: var(--accent); color: var(--accent); }
+.vote-no { border-color: var(--warn); color: var(--warn); }
+
+.ramp-refused {
+  padding: 0.3rem 0.55rem;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.ramp-refused-on { border-color: var(--warn); color: var(--warn); }

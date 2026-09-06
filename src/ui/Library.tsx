@@ -7,6 +7,7 @@ import { FAMILIES, FAMILY_COLOR, FAMILY_INK, missingFields } from '../model/type
 import { deriveTag, tagConflict } from '../model/camelot';
 import { useAudioSource } from '../audio/context';
 import { TrackCard } from './TrackCard';
+import { AddTrack } from './AddTrack';
 import { Player } from './Player';
 
 type FilterId = 'tous' | 'face' | 'famille' | 'cle' | 'divergent';
@@ -35,6 +36,7 @@ export function Library() {
   const [search, setSearch] = useState('');
   const [current, setCurrent] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
 
   const sorted = useMemo(() => {
     if (!tracks) return [];
@@ -129,6 +131,13 @@ export function Library() {
 
         <div className="actions">
           <button
+            className={`action${adding ? ' action-on' : ''}`}
+            onClick={() => setAdding((a) => !a)}
+          >
+            {adding ? 'Fermer la saisie' : 'Ajouter un morceau'}
+          </button>
+
+          <button
             className={`action${sort === 'couleur' ? ' action-on' : ''}`}
             onClick={() => setSort(sort === 'couleur' ? 'disque' : 'couleur')}
           >
@@ -207,6 +216,8 @@ export function Library() {
           <p className="notice" onClick={() => setNotice(null)}>{notice}</p>
         )}
       </header>
+
+      {adding && <AddTrack onDone={setNotice} />}
 
       <div className="list">
         {visible.map((t) => (

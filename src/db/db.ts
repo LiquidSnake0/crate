@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type { Track, AudioBlob } from '../model/types';
+import type { Track, AudioBlob, Judgement } from '../model/types';
 import seed from '../data/seed.json';
 
 // Deux tables, deux durees de vie tres differentes :
@@ -12,12 +12,18 @@ import seed from '../data/seed.json';
 class CrateDb extends Dexie {
   tracks!: Table<Track, string>;
   audio!: Table<AudioBlob, string>;
+  judgements!: Table<Judgement, string>;
 
   constructor() {
     super('crate');
     this.version(1).stores({
       tracks: 'id, artist, album, side, family, audioId',
       audio: 'id',
+    });
+    this.version(2).stores({
+      tracks: 'id, artist, album, side, family, audioId',
+      audio: 'id',
+      judgements: 'id, fromId, toId, verdict',
     });
   }
 }
@@ -105,20 +111,71 @@ export async function updateTrack(id: string, patch: Partial<Track>): Promise<vo
 
 /** Export sans les blobs : c'est le travail qu'on sauvegarde, pas la musique. */
 export async function exportJson(): Promise<string> {
-  const tracks = await db.tracks.toArray();
+  const [tracks, judgements] = await Promise.all([
+    db.tracks.toArray(),
+    db.judgements.toArray(),
+  ]);
   return JSON.stringify(
-    { version: 1, exportedAt: new Date().toISOString(), tracks },
+    { version: 2, exportedAt: new Date().toISOString(), tracks, judgements },
     null,
     1,
   );
 }
 
+/** Enregistre un jugement d'enchainement. Un nouveau verdict remplace l'ancien. */
+export async function judge(
+  fromId: string,
+  toId: string,
+  verdict: 'oui' | 'non',
+  source: Judgement['source'],
+): Promise<void> {
+  await db.judgements.put({
+    id: `${fromId}>${toId}`,
+    fromId,
+    toId,
+    verdict,
+    source,
+    at: new Date().toISOString(),
+  });
+}
+
+export async function unjudge(fromId: string, toId: string): Promise<void> {
+  await db.judgements.delete(`${fromId}>${toId}`);
+}
+
+/** Ajoute un morceau saisi a la main. Renvoie null si un morceau identique existe. */
+export async function addTrack(
+  input: Pick<Track, 'artist' | 'album' | 'title' | 'trackNumber' | 'key' | 'bpm'> &
+    Partial<Pick<Track, 'anchorBpm' | 'side' | 'family' | 'notes'>>,
+): Promise<Track | null> {
+  const id = trackId(input);
+  if (await db.tracks.get(id)) return null;
+  const track: Track = {
+    id,
+    artist: input.artist,
+    album: input.album,
+    title: input.title,
+    trackNumber: input.trackNumber,
+    key: input.key,
+    bpm: input.bpm,
+    anchorBpm: input.anchorBpm ?? null,
+    side: input.side ?? null,
+    family: input.family ?? null,
+    legacyTag: null,
+    notes: input.notes ?? '',
+    audioId: null,
+  };
+  await db.tracks.put(track);
+  return track;
+}
+
 export async function importJson(text: string): Promise<number> {
-  const parsed = JSON.parse(text) as { tracks?: Track[] };
+  const parsed = JSON.parse(text) as { tracks?: Track[]; judgements?: Judgement[] };
   if (!Array.isArray(parsed.tracks)) throw new Error('Fichier illisible : pas de tableau `tracks`.');
   // Les audioId du fichier ne valent rien sur cet appareil : on garde ceux d'ici.
   const existing = new Map((await db.tracks.toArray()).map((t) => [t.id, t.audioId]));
   const merged = parsed.tracks.map((t) => ({ ...t, audioId: existing.get(t.id) ?? null }));
   await db.tracks.bulkPut(merged);
+  if (Array.isArray(parsed.judgements)) await db.judgements.bulkPut(parsed.judgements);
   return merged.length;
 }

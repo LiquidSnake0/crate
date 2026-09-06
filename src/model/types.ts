@@ -71,6 +71,18 @@ export interface Track {
   audioId: string | null;
 }
 
+/** Un enchainement juge. Le jugement de Selim domine toujours le calcul. */
+export interface Judgement {
+  /** `${fromId}>${toId}` */
+  id: string;
+  fromId: string;
+  toId: string;
+  verdict: 'oui' | 'non';
+  /** `live` : reellement joue aux platines. `ecoute` : juge au casque. */
+  source: 'live' | 'ecoute';
+  at: string;
+}
+
 export interface AudioBlob {
   id: string;
   fileName: string;

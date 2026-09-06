@@ -15,6 +15,35 @@ seront calibrables qu'avec de vrais jugements.
 
 Vite + React + TypeScript, Dexie (IndexedDB), zero backend. Vitest pour les tests.
 
+## Le tempo est une rampe, pas une tranche
+
+Sur un set d'une heure, **chaque morceau gagne environ 1 BPM**. A dix-sept morceaux
+l'heure, cela mene de 82 a 99, c'est-a-dire de la tranche basse a la tranche haute.
+Sur un set plus long le pas descend, jusqu'a 0,1 BPM.
+
+Les trois tranches ne sont donc pas des categories exclusives : ce sont **trois
+stations sur une montee**. Passer de `↓82` a `↑97` n'est pas un mur, c'est ce que
+fait le set en entier. En revanche un enchainement isole doit rester proche de la
+cible du moment, d'ou la cloche etroite de `tempoFactor`.
+
+Consequence de conception : `tempoFactor` decroit continument et jamais par paliers.
+Un palier plus large que le pas de rampe rendrait la rampe invisible, et a 0,1 BPM
+ce serait pire.
+
+## Le scoring, trois axes qui se multiplient
+
+`p = tempo^wt × couleur^wc × camelot^wk`, zero si c'est le meme disque.
+
+Ils se multiplient et ne s'additionnent pas : un axe a zero doit tuer le candidat,
+pas se faire rattraper par les deux autres. **Un verdict rendu domine toujours le
+calcul** : le calcul sert a ordonner ce qui n'a pas encore ete juge, jamais a
+corriger un jugement.
+
+Les coefficients sont provisoires et regles depuis l'interface. **Demander avant de
+changer la formule.** L'appariement des couleurs en deux voies (`LANE` dans
+`scoring.ts`) est une hypothese tiree de la forme de la palette, pas une regle
+ecrite : a valider.
+
 ## Regles du domaine
 
 - **Le tag Camelot n'est pas une donnee, c'est une vue** sur (cle, bpm, bpm joue).
@@ -107,6 +136,12 @@ L'app ne sait pas jouer de la musique, elle sait demander une URL a une source.
 `Crate_Barberbeats_82_92_97.xlsx` ; **les familles viennent des couleurs de
 remplissage de sa colonne Tag**, 245 sur 249 recuperees. Restent a remplir a la
 main : 114 faces, 4 couleurs, 4 cles et 4 BPM.
+
+## Le classeur est de l'histoire
+
+Les deux `.xlsx` sont des valeurs saisies avant l'existence de l'app. Ils ont servi
+une fois, au depart. **Tout nouveau morceau entre par l'ecran de saisie**, plus par
+le classeur.
 
 ## Facon de travailler
 
