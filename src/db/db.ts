@@ -316,7 +316,9 @@ export async function importJson(text: string): Promise<ImportJsonReport> {
 
   // Les audioId du fichier ne valent rien sur cet appareil : on garde ceux d'ici.
   const existing = new Map((await db.tracks.toArray()).map((t) => [t.id, t.audioId]));
-  const merged = parsed.tracks.map((t) => ({ ...t, audioId: existing.get(t.id) ?? null }));
+  // Un fichier ecrit a la main peut oublier `notes` : une chaine vide, jamais undefined,
+  // sinon le premier `.toLowerCase()` fait un ecran blanc.
+  const merged = parsed.tracks.map((t) => ({ ...t, notes: t.notes ?? '', audioId: existing.get(t.id) ?? null }));
   await db.tracks.bulkPut(merged);
 
   if (Array.isArray(parsed.judgements)) await db.judgements.bulkPut(parsed.judgements);

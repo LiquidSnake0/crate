@@ -581,3 +581,6 @@ select.action { appearance: none; padding-right: 1.4rem; }
 .set-liste .row-on { outline: 1px solid var(--accent, #4caf50); }
 .set-journal { list-style: none; padding: 0.6rem 0 1rem; margin: 0; font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .set-journal .set-erreur { color: var(--warn, #ffb74d); }
+.set-url { display: flex; gap: 0.3rem; }
+.set-url input { flex: 1; min-width: 0; }
+.set-url .ghost { padding: 0.3rem 0.6rem; }

@@ -122,6 +122,8 @@ export interface LiveState {
   tab?: 'crate' | 'live' | 'set';
   /** Duree visee du set, en minutes. C'est elle qui donne le pas de la rampe. */
   setMinutes?: number;
+  /** Le disque cale au casque, pas encore en salle : iOS peut decharger la page entre les deux gestes. */
+  cuedId?: string | null;
 }
 
 export interface AudioBlob {

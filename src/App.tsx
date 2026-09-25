@@ -4,7 +4,7 @@ import { db, seedIfEmpty, saveLiveState } from './db/db';
 import { AudioSourceProvider } from './audio/context';
 import { Library } from './ui/Library';
 import { Live } from './ui/Live';
-import { Set } from './ui/Set';
+import { SetScreen } from './ui/Set';
 import './App.css';
 
 type Tab = 'crate' | 'live' | 'set';
@@ -36,7 +36,7 @@ export default function App() {
     <AudioSourceProvider>
       {/* Un seul element colle a l'ecran, et il est en bas : deux barres sticky
           empilees en haut se chevauchaient et mangeaient la moitie du telephone. */}
-      <main className="screen">{tab === 'crate' ? <Library /> : tab === 'set' ? <Set /> : <Live />}</main>
+      <main className="screen">{tab === 'crate' ? <Library /> : tab === 'set' ? <SetScreen /> : <Live />}</main>
       <nav className="tabs">
         <button
           className={tab === 'crate' ? 'tab tab-on' : 'tab'}

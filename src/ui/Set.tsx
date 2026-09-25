@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
 import type { Track } from '../model/types';
 import { FAMILY_COLOR, FAMILY_INK } from '../model/types';
 import { deriveTag } from '../model/camelot';
-import { envoyerCue, envoyerPlay, envoyerTake, moteurUrl, setMoteurUrl, type Reponse } from '../model/moteur';
+import { envoyerCue, envoyerPlay, envoyerTake, moteurUrl, oublierMoteurUrl, setMoteurUrl, type Reponse } from '../model/moteur';
 import { Cover } from './Cover';
 
 // UN SET ENREGISTRE NE VEUT PAS DE SURPRISE. L'ecran Live classe des suites possibles ;
@@ -41,7 +41,7 @@ function Etiquette({ t }: { t: Track }) {
   );
 }
 
-export function Set() {
+export function SetScreen() {
   const [nom, setNom] = useState(() => lire(CLE_NOM, 'Mix 2'));
   const [url, setUrl] = useState(moteurUrl());
   // -1 : rien n'a encore ete lance ; n : le morceau n joue, n+1 est le suivant.
@@ -51,11 +51,14 @@ export function Set() {
 
   useEffect(() => { garder(CLE_NOM, nom); }, [nom]);
   useEffect(() => { garder(CLE_POS, String(position)); }, [position]);
+  // Un autre set, une autre position : on ne reprend pas « 3 / 15 » d'un essai d'hier.
+  const [nomVu, setNomVu] = useState(nom);
+  useEffect(() => { if (nom !== nomVu) { setNomVu(nom); setPosition(-1); setCale(false); } }, [nom, nomVu]);
 
   const tous = useLiveQuery(() => db.tracks.toArray(), [], [] as Track[]);
   const set = useMemo(
     () => tous
-      .filter((t) => t.notes.toLowerCase().startsWith(nom.trim().toLowerCase()))
+      .filter((t) => (t.notes ?? '').toLowerCase().startsWith(nom.trim().toLowerCase()))
       .sort((a, b) => (a.plIndex ?? 0) - (b.plIndex ?? 0)),
     [tous, nom],
   );
@@ -65,22 +68,31 @@ export function Set() {
 
   const noter = (r: Reponse) => setJournal((j) => [r, ...j].slice(0, 8));
 
-  const demarrer = async () => {
-    if (!set[0]) return;
-    noter(await envoyerPlay(set[0]));
+  // L'ETAT D'ABORD, LE RESEAU ENSUITE. Le geste est fait aux platines ; l'ecran le montre
+  // tout de suite, et le moteur est prevenu en arriere-plan. Un moteur qui ne repond pas
+  // se lit dans le journal, il ne fige pas l'ecran. Un second tap dans la seconde est
+  // ignore : deux « take » de suite feraient repartir le master de zero.
+  const dernierGeste = useRef(0);
+  const unGeste = () => { const t = Date.now(); if (t - dernierGeste.current < 800) return false; dernierGeste.current = t; return true; };
+
+  const demarrer = () => {
+    if (!set[0] || !unGeste()) return;
     setPosition(0);
     setCale(false);
+    void envoyerPlay(set[0]).then(noter);
   };
-  const caler = async () => {
-    if (!suivant) return;
-    noter(await envoyerCue(suivant));
+  const caler = () => {
+    if (!suivant || !unGeste()) return;
     setCale(true);
+    void envoyerCue(suivant).then(noter);
   };
-  const passer = async () => {
-    if (!suivant) return;
-    noter(await envoyerTake());
+  const passer = () => {
+    if (!suivant || !unGeste()) return;
+    // Il passe sans avoir ete cale : le moteur recoit quand meme la fiche, puis le passage.
+    const promesse = cale ? Promise.resolve() : envoyerCue(suivant).then(noter);
     setPosition(position + 1);
     setCale(false);
+    void promesse.then(envoyerTake).then(noter);
   };
 
   return (
@@ -92,12 +104,20 @@ export function Set() {
         </label>
         <label className="set-champ">
           <span>moteur</span>
-          <input
-            value={url}
-            onChange={(e) => { setUrl(e.target.value); setMoteurUrl(e.target.value); }}
-            placeholder="http://192.168.1.111:5099"
-            inputMode="url"
-          />
+          <span className="set-url">
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => { setUrl(e.target.value); setMoteurUrl(e.target.value); }}
+              onBlur={() => setUrl(moteurUrl())}
+              placeholder="http://192.168.1.111:5099"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+            />
+            <button className="ghost" type="button" title="l'hote de cette page"
+              onClick={() => { oublierMoteurUrl(); setUrl(moteurUrl()); }}>↺</button>
+          </span>
         </label>
       </div>
 

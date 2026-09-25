@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fiche } from './moteur';
+import { fiche, normaliserUrl } from './moteur';
 import { suggestAnchor } from './camelot';
 import type { Track } from './types';
 
@@ -39,5 +39,13 @@ describe('la fiche envoyee au moteur', () => {
 
   it('sans BPM du tout, zero : le moteur cherche seul', () => {
     expect(fiche({ ...base, anchorBpm: null, bpm: null }).bpm).toBe(0);
+  });
+});
+
+describe("l'adresse du moteur", () => {
+  it('prend http:// quand on le tape sans schema, et perd la barre finale', () => {
+    expect(normaliserUrl('192.168.1.111:5099')).toBe('http://192.168.1.111:5099');
+    expect(normaliserUrl('http://192.168.1.111:5099/')).toBe('http://192.168.1.111:5099');
+    expect(normaliserUrl('  ')).toBe('');
   });
 });

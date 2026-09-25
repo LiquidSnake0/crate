@@ -44,7 +44,7 @@ export function Live() {
   const [currentId, setCurrentId] = useState<string | null>(null);
   // Le disque cale au casque, pas encore en salle : le moteur en a la fiche (/deck/cue),
   // il passera au take. Deux gestes, parce que ce sont deux gestes aux platines.
-  const [cued, setCued] = useState<Track | null>(null);
+  const [cuedId, setCuedId] = useState<string | null>(null);
   const [derniere, setDerniere] = useState<Reponse | null>(null);
   const [weights, setWeights] = useState<Weights>(DEFAULT_WEIGHTS);
   const [search, setSearch] = useState('');
@@ -63,14 +63,15 @@ export function Live() {
       setChain(row.chain);
       setWeights((w) => ({ ...w, ramp: row.ramp }));
       if (row.setMinutes) setSetMinutes(row.setMinutes);
+      if (row.cuedId) setCuedId(row.cuedId);
     }
     setRestored(true);
   }, [saved, restored]);
 
   useEffect(() => {
     if (!restored) return;
-    void saveLiveState({ currentId, chain, ramp: weights.ramp, setMinutes });
-  }, [restored, currentId, chain, weights.ramp, setMinutes]);
+    void saveLiveState({ currentId, chain, ramp: weights.ramp, setMinutes, cuedId });
+  }, [restored, currentId, chain, weights.ramp, setMinutes, cuedId]);
 
   const verdicts = useMemo(
     () => new Map((rows ?? []).map((j) => [j.id, j.verdict])),
@@ -80,6 +81,7 @@ export function Live() {
   const code = (t: Track) => places.get(t.id)?.code ?? '';
 
   const current = tracks?.find((t) => t.id === currentId) ?? null;
+  const cued = tracks?.find((t) => t.id === cuedId) ?? null;
 
   const avg = useMemo(() => averageDuration(tracks ?? []), [tracks]);
 
@@ -143,7 +145,7 @@ export function Live() {
               onClick={() => {
                 setCurrentId(t.id);
                 setChain([t.id]);
-                setCued(null);
+                setCuedId(null);
                 void envoyerPlay(t).then(setDerniere);
               }}
             >
@@ -170,14 +172,16 @@ export function Live() {
   // ✓ : le choix est fait, le disque part au casque — le moteur recoit sa fiche. Il ne
   // devient le courant qu'au geste suivant, quand il passe en salle.
   const advance = (t: Track) => {
-    void judge(current.id, t.id, 'oui', 'live');
-    setCued(t);
+    setCuedId(t.id);
     void envoyerCue(t).then(setDerniere);
   };
+  // Le jugement « oui, live » se note quand il passe vraiment, pas quand il est cale :
+  // un candidat cale puis abandonne n'a pas ete joue.
   const passer = () => {
     if (!cued) return;
     const t = cued;
-    setCued(null);
+    void judge(current.id, t.id, 'oui', 'live');
+    setCuedId(null);
     setCurrentId(t.id);
     setChain((c) => [...c, t.id]);
     void envoyerTake().then(setDerniere);

@@ -24,8 +24,23 @@ export function moteurUrl(): string {
   return `http://${location.hostname}:5099`;
 }
 
+/** Sans schema, une adresse tapee au telephone devient une URL relative de la page : on prefixe. */
+export function normaliserUrl(url: string): string {
+  const v = url.trim().replace(/\/+$/, '');
+  if (!v) return '';
+  return /^https?:\/\//i.test(v) ? v : `http://${v}`;
+}
+
 export function setMoteurUrl(url: string): void {
-  try { localStorage.setItem(CLE_URL, url.trim().replace(/\/+$/, '')); } catch { /* idem */ }
+  try {
+    const v = normaliserUrl(url);
+    if (v) localStorage.setItem(CLE_URL, v); else localStorage.removeItem(CLE_URL);
+  } catch { /* idem */ }
+}
+
+/** Oublie l'adresse memorisee : on revient a l'hote de la page, celui qui sert le crate. */
+export function oublierMoteurUrl(): void {
+  try { localStorage.removeItem(CLE_URL); } catch { /* idem */ }
 }
 
 /** Ce que le moteur attend sur /deck/cue et /deck/play : son TrackContext. */
@@ -68,10 +83,13 @@ async function poster(chemin: string, corps?: unknown): Promise<Reponse> {
   const quoi = chemin.replace('/deck/', '');
   const at = new Date().toTimeString().slice(0, 8);   // l'heure locale, celle des notes
   try {
+    // Trois secondes : un moteur eteint ou une mauvaise adresse ne doivent pas bloquer
+    // l'ecran une minute, le temps qu'iOS abandonne de lui-meme.
     const r = await fetch(`${moteurUrl()}${chemin}`, {
       method: 'POST',
       headers: corps === undefined ? undefined : { 'Content-Type': 'application/json' },
       body: corps === undefined ? undefined : JSON.stringify(corps),
+      signal: AbortSignal.timeout(3000),
     });
     return { ok: r.ok, status: r.status, quoi, at };
   } catch {
