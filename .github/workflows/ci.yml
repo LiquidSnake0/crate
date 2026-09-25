@@ -1,0 +1,24 @@
+# Types et tests a chaque push, avant que Pages ne deploie : une PWA qui casse au
+# chargement n'a rien a faire sur le telephone.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: types
+        run: npx tsc -b
+      - name: tests
+        run: npx vitest run
