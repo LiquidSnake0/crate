@@ -584,3 +584,7 @@ select.action { appearance: none; padding-right: 1.4rem; }
 .set-url { display: flex; gap: 0.3rem; }
 .set-url input { flex: 1; min-width: 0; }
 .set-url .ghost { padding: 0.3rem 0.6rem; }
+/* Au format telephone, l'adresse du moteur prend toute la largeur : tronquee, elle ne se relit pas. */
+@media (max-width: 480px) {
+  .set-champ { min-width: 100%; }
+}
