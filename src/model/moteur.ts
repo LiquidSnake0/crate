@@ -63,7 +63,7 @@ export interface Reponse {
 
 async function poster(chemin: string, corps?: unknown): Promise<Reponse> {
   const quoi = chemin.replace('/deck/', '');
-  const at = new Date().toISOString();
+  const at = new Date().toTimeString().slice(0, 8);   // l'heure locale, celle des notes
   try {
     const r = await fetch(`${moteurUrl()}${chemin}`, {
       method: 'POST',

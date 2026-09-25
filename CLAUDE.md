@@ -243,6 +243,13 @@ c'est ce que l'import de la playlist ecrit (`outils/crate_playlist.py` d'emotion
 qui lit la cle rekordbox et la playlist Bandcamp). Trois gestes : demarrer (`/deck/play`),
 « je le cale au casque » (`/deck/cue`), « il passe en salle » (`/deck/take`).
 
+**L'ecran Live parle aussi au moteur, avec les memes trois gestes.** Choisir par quoi on
+demarre = `/deck/play`. Taper la ligne d'un candidat = il part au casque, `/deck/cue`, et
+un bouton vert « il passe en salle : … » apparait sous le disque courant ; le taper =
+`/deck/take`, et seulement la le candidat devient le courant. Les boutons ✓ / ✗ restent des
+jugements (ca passe / ca passe pas), ils n'envoient rien. Deux gestes parce que ce sont deux
+gestes aux platines, et parce que le moteur date chacun dans son journal.
+
 **Le crate dit quel disque, jamais sur quelle voie de la table** : le moteur sait ca tout
 seul. Ce qui part est la fiche telle qu'elle se joue — `anchorBpm` et la cle transposee par
 `deriveTag` — pas les valeurs natives (`src/model/moteur.ts`, teste). Sans famille, la

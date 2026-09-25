@@ -10,6 +10,7 @@ import {
   DEFAULT_WEIGHTS, type Weights,
 } from '../model/scoring';
 import { Cover } from './Cover';
+import { envoyerCue, envoyerPlay, envoyerTake, type Reponse } from '../model/moteur';
 
 /**
  * Page Bandcamp du morceau. **Elle s'ouvre dans le navigateur, jamais dans l'app.**
@@ -41,6 +42,10 @@ export function Live() {
   // s'achevait donc jamais au premier lancement. Un tableau leve l'ambiguite.
   const saved = useLiveQuery(() => db.state.where('id').equals('live').toArray(), [], undefined);
   const [currentId, setCurrentId] = useState<string | null>(null);
+  // Le disque cale au casque, pas encore en salle : le moteur en a la fiche (/deck/cue),
+  // il passera au take. Deux gestes, parce que ce sont deux gestes aux platines.
+  const [cued, setCued] = useState<Track | null>(null);
+  const [derniere, setDerniere] = useState<Reponse | null>(null);
   const [weights, setWeights] = useState<Weights>(DEFAULT_WEIGHTS);
   const [search, setSearch] = useState('');
   const [chain, setChain] = useState<string[]>([]);
@@ -138,6 +143,8 @@ export function Live() {
               onClick={() => {
                 setCurrentId(t.id);
                 setChain([t.id]);
+                setCued(null);
+                void envoyerPlay(t).then(setDerniere);
               }}
             >
               <Cover track={t} size={52} />
@@ -160,10 +167,20 @@ export function Live() {
     `${Math.floor(sec / 60)}\u2009min`;
   const currentTag = deriveTag(current.key, current.bpm, current.anchorBpm);
 
+  // ✓ : le choix est fait, le disque part au casque — le moteur recoit sa fiche. Il ne
+  // devient le courant qu'au geste suivant, quand il passe en salle.
   const advance = (t: Track) => {
     void judge(current.id, t.id, 'oui', 'live');
+    setCued(t);
+    void envoyerCue(t).then(setDerniere);
+  };
+  const passer = () => {
+    if (!cued) return;
+    const t = cued;
+    setCued(null);
     setCurrentId(t.id);
     setChain((c) => [...c, t.id]);
+    void envoyerTake().then(setDerniere);
   };
 
   return (
@@ -197,6 +214,18 @@ export function Live() {
           </button>
         </div>
       </div>
+      {cued && (
+        <div className="set-gestes">
+          <button className="ghost ghost-on" onClick={passer}>
+            il passe en salle : {cued.title}
+          </button>
+        </div>
+      )}
+      {derniere && (
+        <p className={`hint-inline${derniere.ok ? '' : ' set-erreur'}`}>
+          moteur · {derniere.quoi} → {derniere.status || 'injoignable'} · {derniere.at}
+        </p>
+      )}
 
       <div className="ramp">
         <span className="ramp-line">

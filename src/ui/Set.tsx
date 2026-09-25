@@ -180,7 +180,7 @@ export function Set() {
             <ul className="set-journal">
               {journal.map((r, i) => (
                 <li key={i} className={r.ok ? '' : 'set-erreur'}>
-                  {r.at.slice(11, 19)} {r.quoi} → {r.status || 'injoignable'}
+                  {r.at} {r.quoi} → {r.status || 'injoignable'}
                 </li>
               ))}
             </ul>
