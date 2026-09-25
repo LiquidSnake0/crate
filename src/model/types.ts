@@ -119,7 +119,7 @@ export interface LiveState {
   chain: string[];
   ramp: number;
   /** L'ecran ouvert. Revenir de Bandcamp sur le mauvais onglet ferait perdre sa place. */
-  tab?: 'crate' | 'live';
+  tab?: 'crate' | 'live' | 'set';
   /** Duree visee du set, en minutes. C'est elle qui donne le pas de la rampe. */
   setMinutes?: number;
 }

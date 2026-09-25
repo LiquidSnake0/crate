@@ -4,9 +4,10 @@ import { db, seedIfEmpty, saveLiveState } from './db/db';
 import { AudioSourceProvider } from './audio/context';
 import { Library } from './ui/Library';
 import { Live } from './ui/Live';
+import { Set } from './ui/Set';
 import './App.css';
 
-type Tab = 'crate' | 'live';
+type Tab = 'crate' | 'live' | 'set';
 
 export default function App() {
   const [ready, setReady] = useState(false);
@@ -35,7 +36,7 @@ export default function App() {
     <AudioSourceProvider>
       {/* Un seul element colle a l'ecran, et il est en bas : deux barres sticky
           empilees en haut se chevauchaient et mangeaient la moitie du telephone. */}
-      <main className="screen">{tab === 'crate' ? <Library /> : <Live />}</main>
+      <main className="screen">{tab === 'crate' ? <Library /> : tab === 'set' ? <Set /> : <Live />}</main>
       <nav className="tabs">
         <button
           className={tab === 'crate' ? 'tab tab-on' : 'tab'}
@@ -48,6 +49,13 @@ export default function App() {
           onClick={() => go('live')}
         >
           Live
+        </button>
+        {/* Le set enregistre : l'ordre est decide, le crate suit et previent le moteur. */}
+        <button
+          className={tab === 'set' ? 'tab tab-on' : 'tab'}
+          onClick={() => go('set')}
+        >
+          Set
         </button>
       </nav>
     </AudioSourceProvider>

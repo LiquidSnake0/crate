@@ -568,3 +568,16 @@ select.action { appearance: none; padding-right: 1.4rem; }
   border-top: 2px solid var(--accent);
   color: var(--accent);
 }
+
+/* L'ecran Set : le set enregistre, l'ordre decide d'avance. */
+.set-reglages { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.set-champ { flex: 1; min-width: 9rem; display: flex; flex-direction: column; gap: 0.15rem; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.set-champ input { font: inherit; text-transform: none; letter-spacing: 0; padding: 0.4rem 0.55rem; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: inherit; }
+.set-vide { color: var(--muted); padding: 1rem 0; }
+.set-suivant { margin: 0.6rem 0; }
+.set-gestes { display: flex; gap: 0.6rem; margin-top: 0.5rem; }
+.set-gestes .ghost { flex: 1; padding: 0.8rem 0.5rem; font-size: 1rem; }
+.set-gestes .ghost-on { border-color: var(--accent, #4caf50); color: var(--accent, #4caf50); }
+.set-liste .row-on { outline: 1px solid var(--accent, #4caf50); }
+.set-journal { list-style: none; padding: 0.6rem 0 1rem; margin: 0; font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.set-journal .set-erreur { color: var(--warn, #ffb74d); }

@@ -231,6 +231,30 @@ Les images sont reduites a 600 px avant stockage. Une pochette Bandcamp pese env
 
 Un import MP3 lit aussi la pochette dans la frame APIC, une seule fois par disque.
 
+## L'onglet Set et le lien vers le moteur
+
+Ajoutes le 25 septembre 2026 pour la session studio du lendemain (un set enregistre sur
+cle USB, DJM-750MK2, le moteur emotion-calculator en direct).
+
+**Un set enregistre ne veut pas de surprise.** L'ecran Live classe des suites possibles ;
+l'ecran Set suit un ordre decide d'avance et ne calcule rien : le set est l'ensemble des
+morceaux dont les notes commencent par son nom (« Mix 2 »), dans l'ordre de `plIndex` —
+c'est ce que l'import de la playlist ecrit (`outils/crate_playlist.py` d'emotion-calculator,
+qui lit la cle rekordbox et la playlist Bandcamp). Trois gestes : demarrer (`/deck/play`),
+« je le cale au casque » (`/deck/cue`), « il passe en salle » (`/deck/take`).
+
+**Le crate dit quel disque, jamais sur quelle voie de la table** : le moteur sait ca tout
+seul. Ce qui part est la fiche telle qu'elle se joue — `anchorBpm` et la cle transposee par
+`deriveTag` — pas les valeurs natives (`src/model/moteur.ts`, teste). Sans famille, la
+couleur envoyee est le gris neutre du moteur.
+
+**Contenu mixte : la PWA (https, GitHub Pages) ne peut pas appeler un moteur en http.** Au
+studio, le crate s'ouvre sur le telephone depuis l'ordinateur en http
+(`npm run dev -- --host 0.0.0.0`, puis `http://<ip>:5173/crate/`), sur le partage de
+connexion du telephone ; l'adresse du moteur se regle a l'ecran et reste dans ce
+navigateur. La base de ce navigateur est vide au depart : importer le JSON du set dans
+Bibliotheque. Le crate de l'iPhone habituel n'est pas touche.
+
 ## La playlist Bandcamp "Physical"
 
 **https://bandcamp.com/liquidsnake_/playlist/physical** (compte `liquidsnake_`, pas
