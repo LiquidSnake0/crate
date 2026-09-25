@@ -12,7 +12,7 @@
 // partage de connexion du telephone) : elle se regle a l'ecran et reste dans ce navigateur.
 import type { Track } from './types';
 import { FAMILY_COLOR, coverUrl } from './types';
-import { deriveTag } from './camelot';
+import { deriveTag, suggestAnchor } from './camelot';
 
 const CLE_URL = 'crate:moteur';
 
@@ -42,6 +42,9 @@ export interface Fiche {
 
 export function fiche(t: Track): Fiche {
   const tag = deriveTag(t.key, t.bpm, t.anchorBpm);
+  // Le meme ancrage que le tag affiche : celui de Selim, sinon celui de la tranche. Sans
+  // BPM natif, on n'invente rien : 0, et le moteur cherche seul.
+  const ancre = t.anchorBpm ?? (t.bpm ? suggestAnchor(t.bpm) : null);
   return {
     title: t.title,
     disc: t.album,
@@ -50,7 +53,7 @@ export function fiche(t: Track): Fiche {
     family: t.family ?? '',
     colorHex: t.family ? FAMILY_COLOR[t.family] : '#6E6E6E',
     coverUrl: coverUrl(t, 'grande'),
-    bpm: t.anchorBpm ?? t.bpm ?? 0,
+    bpm: ancre ?? 0,
   };
 }
 

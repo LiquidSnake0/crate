@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { fiche } from './moteur';
+import { suggestAnchor } from './camelot';
 import type { Track } from './types';
 
 const base: Track = {
@@ -30,9 +31,13 @@ describe('la fiche envoyee au moteur', () => {
     expect(f.colorHex).toBe('#7FB3D5');
   });
 
-  it('sans ancrage, le BPM natif ; sans cle, une cle vide', () => {
+  it('sans ancrage, celui de la tranche — le meme que le tag affiche ; sans cle, une cle vide', () => {
     const f = fiche({ ...base, anchorBpm: null, key: null });
-    expect(f.bpm).toBe(97.67);
+    expect(f.bpm).toBe(suggestAnchor(97.67));
     expect(f.camelot).toBe('');
+  });
+
+  it('sans BPM du tout, zero : le moteur cherche seul', () => {
+    expect(fiche({ ...base, anchorBpm: null, bpm: null }).bpm).toBe(0);
   });
 });
