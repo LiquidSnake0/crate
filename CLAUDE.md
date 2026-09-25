@@ -238,10 +238,13 @@ cle USB, DJM-750MK2, le moteur emotion-calculator en direct).
 
 **Un set enregistre ne veut pas de surprise.** L'ecran Live classe des suites possibles ;
 l'ecran Set suit un ordre decide d'avance et ne calcule rien : le set est l'ensemble des
-morceaux dont les notes commencent par son nom (« Mix 2 »), dans l'ordre de `plIndex` —
-c'est ce que l'import de la playlist ecrit (`outils/crate_playlist.py` d'emotion-calculator,
-qui lit la cle rekordbox et la playlist Bandcamp). Trois gestes : demarrer (`/deck/play`),
-« je le cale au casque » (`/deck/cue`), « il passe en salle » (`/deck/take`).
+morceaux dont les notes commencent par son nom (« Mix 2 »), dans l'ordre de `plIndex`.
+C'est ce qu'ecrit `outils/crate_playlist.py` d'emotion-calculator (`SET=` le nom, `plIndex`
+le rang dans la liste ; il lit la cle rekordbox), et le JSON du set de demain est
+`~/.cache/emotion-emulator/studio/crate-mix2.json`, a importer dans Bibliotheque. Trois
+gestes : demarrer (`/deck/play`), « je le cale au casque » (`/deck/cue`), « il passe en
+salle » (`/deck/take`). L'etat change avant l'envoi, le fetch a trois secondes, un second
+tap dans la seconde est ignore, et « il passe » sans cue envoie la fiche puis le passage.
 
 **L'ecran Live parle aussi au moteur, avec les memes trois gestes.** Choisir par quoi on
 demarre = `/deck/play`. Taper la ligne d'un candidat = il part au casque, `/deck/cue`, et
