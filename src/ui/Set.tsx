@@ -58,7 +58,8 @@ export function SetScreen() {
   const tous = useLiveQuery(() => db.tracks.toArray(), [], [] as Track[]);
   const set = useMemo(
     () => tous
-      .filter((t) => (t.notes ?? '').toLowerCase().startsWith(nom.trim().toLowerCase()))
+      // « mix2 » ou « Mix 2 » : les espaces et la casse ne comptent pas.
+      .filter((t) => (t.notes ?? '').toLowerCase().replace(/\s+/g, '').startsWith(nom.toLowerCase().replace(/\s+/g, '')))
       .sort((a, b) => (a.plIndex ?? 0) - (b.plIndex ?? 0)),
     [tous, nom],
   );
