@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../db/db';
+import { db, importJson } from '../db/db';
 import type { Track } from '../model/types';
 import { FAMILY_COLOR, FAMILY_INK } from '../model/types';
 import { deriveTag } from '../model/camelot';
@@ -64,6 +64,30 @@ export function SetScreen() {
     [tous, nom],
   );
 
+  // LE SET SE CHARGE TOUT SEUL. Servi a cote de l'app (public/sets/<nom>.json, meme origine),
+  // il s'importe quand la base ne le contient pas : sur le telephone au studio, personne ne
+  // va chercher un fichier dans Safari puis dans Fichiers.
+  const [chargement, setChargement] = useState<string | null>(null);
+  const tente = useRef<string | null>(null);
+  const charger = async () => {
+    const fichier = `${import.meta.env.BASE_URL}sets/${nom.toLowerCase().replace(/\s+/g, '')}.json`;
+    setChargement('chargement…');
+    try {
+      const r = await fetch(fichier, { cache: 'no-store' });
+      if (!r.ok) { setChargement(`pas de ${fichier} (${r.status})`); return; }
+      const rapport = await importJson(await r.text());
+      setChargement(`${rapport.tracks} morceaux importes`);
+    } catch (e) {
+      setChargement(`import impossible : ${e instanceof Error ? e.message : String(e)}`);
+    }
+  };
+  useEffect(() => {
+    if (tous.length === 0 || set.length > 0 || tente.current === nom) return;
+    tente.current = nom;
+    void charger();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tous, set, nom]);
+
   const courant = position >= 0 ? set[position] : undefined;
   const suivant = set[position + 1];
 
@@ -123,7 +147,13 @@ export function SetScreen() {
       </div>
 
       {set.length === 0 ? (
-        <p className="set-vide">Aucun morceau dont les notes commencent par « {nom} ».</p>
+        <div className="set-vide">
+          <p>Aucun morceau dont les notes commencent par « {nom} ».</p>
+          <div className="set-gestes">
+            <button className="ghost ghost-on" onClick={charger}>charger le set depuis le portable</button>
+          </div>
+          {chargement && <p className="hint-inline">{chargement}</p>}
+        </div>
       ) : (
         <>
           <div className="now">
